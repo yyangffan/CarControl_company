@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:maxHeight="@dimen/dp_140"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_pop_td"
+    android:padding="@dimen/dp_1"
+    android:orientation="vertical">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/pop_zizhi_recy"
+        android:layout_width="match_parent"
+        android:background="@color/white"
+        android:elevation="@dimen/dp_8"
+        android:layout_height="@dimen/dp_140" />s
+
+</LinearLayout>

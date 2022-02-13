@@ -1,0 +1,27 @@
+apply plugin: 'com.android.library'
+
+group = 'com.github.yuzhiqiang1993'
+
+android {
+    compileSdkVersion 29
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+        vectorDrawables.useSupportLibrary = true
+    }
+
+
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    api files('libs/core-3.4.1.jar')
+    compileOnly 'androidx.appcompat:appcompat:1.3.1'
+    compileOnly 'com.google.android.material:material:1.4.0'
+    compileOnly "androidx.vectordrawable:vectordrawable:1.1.0"
+    compileOnly "androidx.annotation:annotation:1.2.0"
+
+}

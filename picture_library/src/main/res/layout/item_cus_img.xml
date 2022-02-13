@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="1dp"
+    android:background="@drawable/bg_stro_white"
+    android:padding="0.5dp"
+    tools:ignore="ResourceName">
+
+    <ImageView
+        android:id="@+id/item_cus_img"
+        android:layout_width="match_parent"
+        android:scaleType="centerCrop"
+        android:layout_height="60dp" />
+    <TextView
+        android:id="@+id/item_cus_title"
+        android:textColor="@color/picture_color_aab2bd"
+        android:textSize="10sp"
+        android:text="前照灯"
+        android:maxLines="3"
+        android:visibility="gone"
+        android:background="#22000000"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</FrameLayout>

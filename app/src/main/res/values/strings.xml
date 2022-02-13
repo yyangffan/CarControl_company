@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">CarControl</string>
+    <string name="digits_pwd">0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+</resources>

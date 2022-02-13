@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingLeft="@dimen/dp_8"
+    android:paddingRight="@dimen/dp_8"
+    android:paddingBottom="@dimen/dp_8">
+
+    <TextView
+        android:id="@+id/item_judge_pos"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/bg_appcolor"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/item_judge_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="1" />
+
+    <TextView
+        android:id="@+id/item_judge_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/red"
+        app:layout_constraintStart_toEndOf="@+id/item_judge_pos"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="车辆识别代号" />
+
+    <TextView
+        android:id="@+id/item_judge_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:textColor="#999999"
+        app:layout_constraintStart_toStartOf="@+id/item_judge_title"
+        app:layout_constraintTop_toBottomOf="@+id/item_judge_title"
+        tools:text="jksljlkwelkwjgke" />
+
+    <TextView
+        android:id="@+id/item_judge_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:background="@drawable/bg_circle_gray"
+        android:paddingLeft="@dimen/dp_12"
+        android:paddingTop="@dimen/dp_4"
+        android:paddingRight="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_4"
+        android:text="未判定"
+        android:textColor="#999999"
+        app:layout_constraintBottom_toBottomOf="@+id/item_judge_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/item_judge_tvrea"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_6"
+        android:text="不合格原因："
+        android:textColor="@color/picture_color_grey"
+        app:layout_constraintStart_toStartOf="@+id/item_judge_content"
+        app:layout_constraintTop_toBottomOf="@+id/item_judge_content" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/item_judge_recy"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/item_judge_title"
+        app:layout_constraintTop_toBottomOf="@+id/item_judge_edtrea" />
+
+    <EditText
+        android:id="@+id/item_judge_edtrea"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:background="@drawable/bg_stro_gray"
+        android:gravity="top|left"
+        android:hint="请输入不合格原因"
+        android:padding="@dimen/dp_6"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/item_judge_tvrea"
+        app:layout_constraintTop_toTopOf="@+id/item_judge_tvrea" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/item_judge_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:constraint_referenced_ids="item_judge_tvrea,item_judge_recy,item_judge_edtrea" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

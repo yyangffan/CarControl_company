@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+   <!-- <gradient
+        android:angle="90"
+        android:centerColor="@color/white"
+        android:endColor="#FF4BB7E2"
+        android:startColor="#FF4BB7E2"
+        android:type="sweep" />
+    <corners android:radius="@dimen/dp_5"/>-->
+    <gradient
+        android:angle="90"
+        android:centerColor="@color/white"
+        android:endColor="@color/white"
+        android:startColor="@color/white"
+        android:type="sweep" />
+    <corners android:radius="@dimen/dp_5"/>
+</shape>

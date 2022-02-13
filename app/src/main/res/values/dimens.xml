@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="title_pdtop">@dimen/dp_35</dimen>
+    <dimen name="title_pdbot">@dimen/dp_8</dimen>
+    <dimen name="title_tvsize">18sp</dimen>
+</resources>
