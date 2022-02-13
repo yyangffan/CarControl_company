@@ -8,7 +8,6 @@
     <application>
         <activity
             android:name=".PicPriewActivity"
-            android:theme="@style/Picture.Theme.Translucent"
             android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden|screenSize"
            />
