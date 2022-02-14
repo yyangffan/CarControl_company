@@ -21,5 +21,5 @@ public interface OnResultCallbackListener<T> {
     void onCancel();
 
     /*自定义拍照的返回*/
-    void onCusResult(List<T> result, int pos,int nowImgpos);
+    void onCusResult(List<T> result, int pos,int nowImgpos,OnActiBackListener onActiBackListener);
 }

@@ -80,7 +80,7 @@ public class JudgeAdapter extends RecyclerView.Adapter<JudgeAdapter.ViewHolder> 
 
         vh.mItemJudgePos.setText(String.valueOf(position + 1));
         vh.mItemJudgeTitle.setText(bean.getCheckItemName());
-        vh.mItemJudgeContent.setText(TextUtils.isEmpty(bean.getCheckItemCode()) ? "" : bean.getCheckItemCode());
+//        vh.mItemJudgeContent.setText(TextUtils.isEmpty(bean.getCheckItemCode()) ? "" : bean.getCheckItemCode());
         vh.mItemJudgeGroup.setVisibility(View.GONE);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         vh.mItemJudgeRecy.setLayoutManager(linearLayoutManager);

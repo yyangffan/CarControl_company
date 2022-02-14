@@ -34,6 +34,7 @@ import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.entity.MediaExtraInfo;
+import com.luck.picture.lib.listener.OnActiBackListener;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.luck.picture.lib.tools.BitmapUtils;
 import com.luck.picture.lib.tools.MediaUtils;
@@ -276,7 +277,7 @@ public class CheckItemActivity extends CarBaseActivity {
         }
         mImagePhotoAdapter.notifyDataSetChanged();*/
     }
-
+    /*判定项目的图片选择*/
     private void itemSelectPhoto(int pos) {
         CheckAllBean.DataBean.CheckItemBean itemBean = mMapList.get(pos);
         List<LocalMedia> picLists = itemBean.getPicLists();
@@ -302,7 +303,7 @@ public class CheckItemActivity extends CarBaseActivity {
                     }
 
                     @Override
-                    public void onCusResult(List<LocalMedia> result, int position, int nowImgpos) {
+                    public void onCusResult(List<LocalMedia> result, int position, int nowImgpos, OnActiBackListener onActiBackListener) {
                         // 自定义结果回调
                     }
                 });
@@ -310,7 +311,7 @@ public class CheckItemActivity extends CarBaseActivity {
 
     }
 
-
+    /*检测图片的选择*/
     private void selectPhoto() {
         PictureSelector.create(this)
                 .openCamera(PictureMimeType.ofImage())
@@ -335,7 +336,7 @@ public class CheckItemActivity extends CarBaseActivity {
                     }
 
                     @Override
-                    public void onCusResult(List<LocalMedia> images, int pos, int nowImgpos) {
+                    public void onCusResult(List<LocalMedia> images, int pos, int nowImgpos, OnActiBackListener onActiBackListener) {
                         // 自定义结果回调
                         CheckItemPhotoBean bean = mCheckItemPhotoLists.get(pos);
                         if (nowImgpos == mImageBeans.size()) {//新增
@@ -350,6 +351,7 @@ public class CheckItemActivity extends CarBaseActivity {
                         }
                         bean.setHasTake(true);
                         bean.setImgPos(nowImgpos);
+                        onActiBackListener.onActiBackListener("http://algejklwejlwejlweg"+images.get(0).getPath());
 //                        convertBitmap(BitmapFactory.decodeFile(pic_path), pic_path);
 //                        throwGlideGetBit(BitmapFactory.decodeFile(pic_path),pic_path);
                     }

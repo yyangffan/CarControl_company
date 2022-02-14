@@ -37,6 +37,7 @@ import com.luck.picture.lib.config.PictureSelectionConfig;
 import com.luck.picture.lib.dialog.DigPhopro;
 import com.luck.picture.lib.dialog.PictureCustomDialog;
 import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.listener.OnActiBackListener;
 import com.luck.picture.lib.listener.OnPermissionDialogOptionCallback;
 import com.luck.picture.lib.permissions.PermissionChecker;
 import com.luck.picture.lib.tools.BitmapUtils;
@@ -234,7 +235,18 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
         mCameraView.setCameraListener(new CameraListener() {
             @Override
             public void onPictureSuccess(@NonNull String url) {
-                shwoConfir(true, url);
+                new  CountDownTimer(1000,1000){
+                    @Override
+                    public void onTick(long l) {
+
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        shwoConfir(true, url);
+                    }
+                }.start();
+
             }
 
             @Override
@@ -269,6 +281,7 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
             @Override
             public void onClick(View view) {
                 mCameraView.goTakePicture();
+                mimg_take.setEnabled(false);
             }
         });
         mtv_check.setOnClickListener(new View.OnClickListener() {
@@ -384,7 +397,7 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
                 }
             });
         }
-
+        mimg_take.setEnabled(true);
     }
 
     //拍完图片后的回调
@@ -395,6 +408,16 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
             finish();
             return;
         }
+        //通知调用界面进行数据更新
+        if (PictureSelectionConfig.listener != null) {
+            PictureSelectionConfig.listener.onCusResult(images, select_pos, nowImgPos,new OnActiBackListener(){
+                @Override
+                public void onActiBackListener(String url) {
+                    Log.e(TAG, "onActiBackListener: "+url );
+                }
+            });
+        }
+
         mCameraView.resetState();
         if (nowImgPos == mCusImgvs.size()) {//新增
             LocalMedia localMedia = images.get(0);
@@ -407,10 +430,6 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
             mPictcusAdapter.notifyItemChanged(nowImgPos);
         }
 
-        //通知调用界面进行数据更新
-        if (PictureSelectionConfig.listener != null) {
-            PictureSelectionConfig.listener.onCusResult(images, select_pos, nowImgPos);
-        }
         /*自动选中下一个*/
         if (select_pos != mCheckItemPhotoLists.size() - 1) {
             mCheckItemPhotoLists.get(select_pos).setHasTake(true);
@@ -432,6 +451,12 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
 
 //        togeBit(BitmapFactory.decodeFile(pic_path), new File(pic_path));
 //        Log.e(TAG, "onPicResult: 拍照结束" + pic_path);
+
+    }
+
+    private void goNext(){
+
+
 
     }
 

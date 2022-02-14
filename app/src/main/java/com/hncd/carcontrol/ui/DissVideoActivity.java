@@ -1,12 +1,15 @@
 package com.hncd.carcontrol.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.hncd.carcontrol.R;
 import com.hncd.carcontrol.base.CarBaseActivity;
+import com.hncd.carcontrol.bean.DisassemablVideo;
 import com.superc.yyfflibrary.utils.titlebar.TitleUtils;
 
 import butterknife.BindView;
@@ -22,6 +25,9 @@ public class DissVideoActivity extends CarBaseActivity {
     TextView mDissVideoTd;
     @BindView(R.id.diss_video_comit)
     Button mDissVideoComit;
+
+    private String data_result;
+    private DisassemablVideo bean;
 
     @Override
     public int getContentLayoutId() {
@@ -50,7 +56,12 @@ public class DissVideoActivity extends CarBaseActivity {
     }
 
     private void getData() {
-        mTextViewCode.setText("流水号：" + "12124512412");
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        data_result = extras.getString("data");
+        String result_bean = extras.getString("bean");
+        bean = new Gson().fromJson(result_bean,DisassemablVideo.class);
+        mTextViewCode.setText("流水号：" +data_result);
         mDissVideoTd.setText("通道1");
 
 

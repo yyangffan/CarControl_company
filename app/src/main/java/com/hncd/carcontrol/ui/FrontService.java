@@ -9,14 +9,30 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 
+import com.google.gson.Gson;
 import com.hncd.carcontrol.R;
+import com.hncd.carcontrol.base.Constant;
+import com.hncd.carcontrol.utils.CarShareUtil;
+
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 import androidx.annotation.Nullable;
 
 
 public class FrontService extends Service {
+    private static final String TAG = "FrontService";
+    private String mUser_id;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -88,8 +104,84 @@ public class FrontService extends Service {
 
     private void toConnectSocket(){
 
-
+        mUser_id = (String) CarShareUtil.getInstance().get(CarShareUtil.APP_USERID, "");
+        String connect_url = Constant.BASE_URL+"webSocket/"+mUser_id;
+        initSocket(connect_url);
 
     }
+
+
+    private WebSocketClient mWebSocketClient;
+    private static final long HEART_BEAT_RATE = 10 * 1000;//心跳间隔
+    private long sendTime = 0L;
+
+    // 初始化socket
+    public void initSocket(String sock_url) {
+        if (null == mWebSocketClient) {
+            Log.e(TAG, "initSocket: "+sock_url );
+            try {
+                mWebSocketClient = new WebSocketClient(new URI(sock_url)) {
+                    @Override
+                    public void onOpen(ServerHandshake handshakedata) {
+                        Log.i(TAG, "State_Socket：连接成功-用户状态");
+                    }
+
+                    @Override
+                    public void onMessage(String message) {
+                        Log.i(TAG, "State_Socket：返回数据-用户状态" + message);
+                    }
+
+                    @Override
+                    public void onClose(int code, String reason, boolean remote) {
+                        Log.e(TAG, "State_Socket：已关闭-用户状态 code:" + code + " reason:" + reason);
+                    }
+
+                    @Override
+                    public void onError(Exception ex) {
+                        Log.e(TAG, "State_Socket：连接错误-用户状态" + ex.toString());
+                    }
+                };
+                mWebSocketClient.connectBlocking();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 开启重连
+     */
+    private void reconnectWs() {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    mWebSocketClient.reconnectBlocking();
+                    Log.e(TAG, "State_Socket：重新连接中...");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    public void stopConnect() {
+        if (mWebSocketClient != null) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("state", "4");//离线
+            try {
+                mWebSocketClient.send(new Gson().toJson(map));
+                mWebSocketClient.close();
+                mWebSocketClient = null;
+            } catch (Exception e) {
+                Log.e(TAG, "run: " + e.toString());
+            }
+
+        }
+    }
+
+
 
 }

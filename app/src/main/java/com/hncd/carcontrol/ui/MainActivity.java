@@ -14,6 +14,8 @@ import com.hncd.carcontrol.R;
 import com.hncd.carcontrol.adapter.MainRecyAdapter;
 import com.hncd.carcontrol.base.CarBaseActivity;
 import com.hncd.carcontrol.base.Constant;
+import com.hncd.carcontrol.bean.BaseBean;
+import com.hncd.carcontrol.bean.DisassemablVideo;
 import com.hncd.carcontrol.bean.RegistInforBean;
 import com.hncd.carcontrol.utils.CarHttp;
 import com.hncd.carcontrol.utils.HttpBackListener;
@@ -46,6 +48,7 @@ public class MainActivity extends CarBaseActivity {
     private String[][] mMain_strs = new String[][]{{"注销查验", "0"}, {"拆解视频", "1"}, {"个人中心", "2"}};
     private MainRecyAdapter mMainRecyAdapter;
     private final int REQUEST_CODE_SCAN = 110;
+    private final int REQUEST_CODE_VIDEO= 111;
 
     @Override
     public int getContentLayoutId() {
@@ -101,11 +104,11 @@ public class MainActivity extends CarBaseActivity {
     private void whatToGo(String id) {
         switch (id) {
             case "0":
-                rxPermissionTest();
-//                statActivity(CancelCheckActivity.class);
+                rxPermissionTest(0);
                 break;
             case "1":
-                statActivity(DissVideoActivity.class);
+                rxPermissionTest(1);
+//                statActivity(DissVideoActivity.class);
                 break;
             case "2":
                 statActivity(PersonalCenterActivity.class);
@@ -114,7 +117,7 @@ public class MainActivity extends CarBaseActivity {
     }
 
     /*请求相机权限--如果可打开相册需同时请求另一个权限*/
-    private void rxPermissionTest() {
+    private void rxPermissionTest(int type) {
         RxPermissions rxPermissions = new RxPermissions(this);
         rxPermissions.request(Manifest.permission.CAMERA).subscribe(new Consumer<Boolean>() {
             @Override
@@ -137,7 +140,7 @@ public class MainActivity extends CarBaseActivity {
                     config.setShowAlbum(false);//是否显示相册
                     config.setFullScreenScan(true);//是否全屏扫描  默认为true  设为false则只会在扫描框中扫描
                     intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
-                    startActivityForResult(intent, REQUEST_CODE_SCAN);
+                    startActivityForResult(intent, type==0?REQUEST_CODE_SCAN:REQUEST_CODE_VIDEO);
 
                 } else {
                     Uri packageURI = Uri.parse("package:" + getPackageName());
@@ -159,6 +162,12 @@ public class MainActivity extends CarBaseActivity {
                     if (data != null) {
                         String content = data.getStringExtra(Constant.CODED_CONTENT);
                         toComit(content);
+                    }
+                    break;
+                case REQUEST_CODE_VIDEO:
+                    if (data != null) {
+                        String content = data.getStringExtra(Constant.CODED_CONTENT);
+                        getDisassemablVideo(content);
                     }
                     break;
             }
@@ -185,7 +194,6 @@ public class MainActivity extends CarBaseActivity {
                     Intent intent = new Intent(MainActivity.this, CheckResultActivity.class);
                     intent.putExtras(bundle);
                     startActivity(intent);
-                    finish();
                 } else {
                     ToastShow(bean.getMsg());
                 }
@@ -196,6 +204,38 @@ public class MainActivity extends CarBaseActivity {
                 super.onErrorLIstener(error);
             }
         });
+    }
+
+    private void getDisassemablVideo(String code){
+        Map<String, Object> map = new HashMap<>();
+        map.put("deptId", mLoginBean.getData().getDeptId());
+        map.put("serialNumber", code);
+        String result = new Gson().toJson(map);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=UTF-8"), result);
+        CarHttp.getInstance().toGetData(CarHttp.getInstance().getApiService().getDisassemablVideo(requestBody), new HttpBackListener() {
+            @Override
+            public void onSuccessListener(Object result) {
+                super.onSuccessListener(result);
+                DisassemablVideo bean = new Gson().fromJson(result.toString(), DisassemablVideo.class);
+                if (bean.getCode() == 200) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("data", code);
+                    bundle.putString("bean", result.toString());
+                    Intent intent = new Intent(MainActivity.this, DissVideoActivity.class);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                } else {
+                    ToastShow(bean.getMsg());
+                }
+            }
+
+            @Override
+            public void onErrorLIstener(String error) {
+                super.onErrorLIstener(error);
+            }
+        });
+
+
     }
 
 

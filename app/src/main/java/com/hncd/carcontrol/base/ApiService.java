@@ -79,4 +79,16 @@ public interface ApiService {
      */
     @POST("cancellation/getMessageInfo")
     Observable<JSONObject> getMessageInfo(@Body RequestBody body);
+
+     /**
+     * 根据流水号查询拆解视频信息
+     *
+     * @param body
+     * @return
+     */
+    @POST("cancellation/getDisassemablVideo")
+    Observable<JSONObject> getDisassemablVideo(@Body RequestBody body);
+
+
+
 }
