@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">CarControl</string>
+    <string name="app_name">查验监管</string>
     <string name="digits_pwd">0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
 </resources>

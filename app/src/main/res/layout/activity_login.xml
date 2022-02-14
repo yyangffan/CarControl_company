@@ -24,8 +24,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
         android:background="@drawable/bg_appcolor"
         android:text="登  录"
         android:textColor="@color/white"
@@ -33,8 +33,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_baseset"
-        app:layout_constraintVertical_bias="0.18" />
+        app:layout_constraintTop_toBottomOf="@+id/login_baseset" />
 
     <TextView
         android:id="@+id/login_baseset"
@@ -55,33 +54,35 @@
     <LinearLayout
         android:id="@+id/ll_name"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:background="@drawable/bg_login_bt"
-        app:layout_constraintStart_toStartOf="@+id/textView2"
-        app:layout_constraintBottom_toTopOf="@+id/textView2"
         app:layout_constraintEnd_toEndOf="@+id/textView2"
-        android:layout_height="wrap_content">
+        app:layout_constraintStart_toStartOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/textView11">
+
         <ImageView
             android:id="@+id/textView"
             android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_18"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/dp_10"
             android:src="@drawable/icon_name"
-            android:layout_height="@dimen/dp_18"
             app:layout_constraintBottom_toTopOf="@+id/textView2"
             app:layout_constraintStart_toStartOf="@+id/textView2" />
 
         <EditText
             android:id="@+id/login_sfzcode"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@null"
             android:ellipsize="end"
             android:hint="请输入您的身份证号码"
-            android:textColor="@color/white"
-            android:padding="@dimen/dp_10"
             android:lines="1"
+            android:padding="@dimen/dp_10"
             android:text="130730198802241415"
+            android:textColor="@color/white"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@+id/textView"
             app:layout_constraintEnd_toEndOf="@+id/textView2"
@@ -94,36 +95,37 @@
     <LinearLayout
         android:id="@+id/ll_pwd"
         android:layout_width="0dp"
-        app:layout_constraintStart_toStartOf="@+id/textView2"
-        app:layout_constraintEnd_toEndOf="@+id/textView2"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:background="@drawable/bg_login_bt"
-        android:layout_marginTop="@dimen/dp_10"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"
         android:orientation="horizontal"
-        android:layout_height="wrap_content">
+        app:layout_constraintEnd_toEndOf="@+id/textView2"
+        app:layout_constraintStart_toStartOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/ll_name">
 
         <ImageView
             android:id="@+id/textView3"
             android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_18"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/dp_10"
             android:src="@drawable/icon_pwd"
-            android:layout_height="@dimen/dp_18"
             app:layout_constraintBottom_toTopOf="@+id/textView2"
             app:layout_constraintStart_toStartOf="@+id/textView2" />
+
         <EditText
             android:id="@+id/login_pwd"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@null"
             android:ellipsize="end"
             android:hint="请输入密码"
             android:inputType="textPassword"
             android:lines="1"
-            android:textColor="@color/white"
             android:padding="@dimen/dp_10"
-            android:text="admin123"
+            android:text="123456"
+            android:textColor="@color/white"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@+id/textView3"
             app:layout_constraintEnd_toEndOf="@+id/textView2"
@@ -137,7 +139,7 @@
         android:id="@+id/imageView"
         android:layout_width="@dimen/dp_260"
         android:layout_height="@dimen/dp_260"
-        android:layout_marginTop="@dimen/title_pdtop"
+        android:layout_marginTop="@dimen/dp_56"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -147,12 +149,24 @@
         android:id="@+id/textView11"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:gravity="center"
         android:text="远程查验监管系统登录"
         android:textColor="@color/app_color_white"
         android:textSize="28sp"
-        app:layout_constraintBottom_toTopOf="@+id/ll_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:visibility="gone"
+        android:text="记住密码"
+        app:layout_constraintStart_toStartOf="@+id/ll_pwd"
+        app:layout_constraintTop_toBottomOf="@+id/ll_pwd" />
 </androidx.constraintlayout.widget.ConstraintLayout>

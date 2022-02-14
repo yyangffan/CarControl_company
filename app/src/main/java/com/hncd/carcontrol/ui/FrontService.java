@@ -36,9 +36,9 @@ public class FrontService extends Service {
         Intent nfIntent = new Intent(this, MainActivity.class);
         Notification notification=new Notification.Builder (this,getString(R.string.app_name))
                 .setContentIntent(PendingIntent.getActivity(this, 0, nfIntent, 0)) // 设置PendingIntent
-                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher)) // 设置下拉列表中的图标(大图标)
+                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.mipmap.logo)) // 设置下拉列表中的图标(大图标)
                 .setContentTitle (getString(R.string.app_name))
-                .setSmallIcon (R.mipmap.ic_launcher)
+                .setSmallIcon (R.mipmap.logo)
                 .setContentText ("请保持程序在后台运行")
                 .setWhen(System.currentTimeMillis()) // 设置该通知发生的时间
                 .build ();
@@ -53,9 +53,9 @@ public class FrontService extends Service {
        /* Notification.Builder builder = new Notification.Builder(this.getApplicationContext()); //获取一个Notification构造器
         Intent nfIntent = new Intent(this, MainActivity.class);
         builder.setContentIntent(PendingIntent.getActivity(this, 0, nfIntent, 0)) // 设置PendingIntent
-                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher)) // 设置下拉列表中的图标(大图标)
+                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.mipmap.logo)) // 设置下拉列表中的图标(大图标)
                 .setContentTitle("小二生活商家版") // 设置下拉列表里的标题
-                .setSmallIcon(R.mipmap.ic_launcher) // 设置状态栏内的小图标
+                .setSmallIcon(R.mipmap.logo) // 设置状态栏内的小图标
                 .setContentText("请保持程序在后台运行") // 设置上下文内容
                 .setWhen(System.currentTimeMillis()); // 设置该通知发生的时间
         Notification notification = builder.build(); // 获取构建好的Notification
@@ -73,9 +73,9 @@ public class FrontService extends Service {
             Notification.Builder builder = new Notification.Builder(this.getApplicationContext()); //获取一个Notification构造器
             Intent nfIntent = new Intent(this, MainActivity.class);
             builder.setContentIntent(PendingIntent.getActivity(this, 0, nfIntent, 0)) // 设置PendingIntent
-                    .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher)) // 设置下拉列表中的图标(大图标)
+                    .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.mipmap.logo)) // 设置下拉列表中的图标(大图标)
                     .setContentTitle(getString(R.string.app_name)) // 设置下拉列表里的标题
-                    .setSmallIcon(R.mipmap.ic_launcher) // 设置状态栏内的小图标
+                    .setSmallIcon(R.mipmap.logo) // 设置状态栏内的小图标
                     .setContentText("请保持程序在后台运行") // 设置上下文内容
                     .setWhen(System.currentTimeMillis()); // 设置该通知发生的时间
             Notification notification = builder.build(); // 获取构建好的Notification
