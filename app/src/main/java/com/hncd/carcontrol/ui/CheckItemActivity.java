@@ -162,10 +162,11 @@ public class CheckItemActivity extends CarBaseActivity {
 
     /*不合格的需要填写原因*/
     private void toGonext() {
+        CheckAllBean.DataBean mBean_data =new CheckAllBean.DataBean();
         boolean canComit = true, isHege = true;
         for (int i = 0; i < mMapList.size(); i++) {
             CheckAllBean.DataBean.CheckItemBean checkItemBean = mMapList.get(i);
-            if (checkItemBean.getType() == 0) {
+            if (checkItemBean.getType() == 0) {//上部分
                 int typeone = checkItemBean.getTypeone();
                 if (typeone == 3) {//不合格
                     isHege = false;
@@ -174,9 +175,10 @@ public class CheckItemActivity extends CarBaseActivity {
                         break;
                     }
                 } else if (typeone == 0) {
-                    isHege = false;
+                    ToastShow("请选择未判定项目");
+                    return;
                 }
-            } else {
+            } else {//改装部分
                 int typetwo = checkItemBean.getTypetwo();
                 if (typetwo == 3) {//不合格
                     isHege = false;
@@ -184,25 +186,24 @@ public class CheckItemActivity extends CarBaseActivity {
                         canComit = false;
                         break;
                     }
-                } else if (typetwo == 0) {
-                    isHege = false;
                 }
             }
 
         }
-        List<Map<String,Object>> imgsLists = new ArrayList<>();//检测图片的存储集合
-        for (int i = 0; i < mImageBeans.size(); i++) {
-            LocalMedia localMedia = mImageBeans.get(i);
-            Map<String,Object> map = new HashMap<>();
-            map.put("title",localMedia.getTitle());
-            map.put("code",localMedia.getCode());
-            map.put("path",localMedia.getImgUrl());
-            imgsLists.add(map);
+        List<CheckItemPhotoBean> photoLists = new ArrayList<>();//检测图片的存储集合
+        for (int i = 0; i < mBean.getData().getCheckItemPhoto().size(); i++) {
+            CheckItemPhotoBean checkItemPhotoBean = mBean.getData().getCheckItemPhoto().get(i);
+            if(!TextUtils.isEmpty(checkItemPhotoBean.getPhotoPath())){
+                photoLists.add(checkItemPhotoBean);
+            }
         }
+        mBean_data.setCheckItem(mBean.getData().getCheckItem());
+        mBean_data.setCheckItemRefit(mBean.getData().getCheckItemRefit());
+        mBean_data.setCheckItemPhoto(photoLists);
         if (canComit) {
-            mBean.getData().setImageBeans(imgsLists);
             Intent intent = new Intent(this, CheckEndActivity.class);
-            intent.putExtra("data", new Gson().toJson(mBean));
+            intent.putExtra("data", new Gson().toJson(mBean));//通道使用
+            intent.putExtra("updata",new Gson().toJson(mBean_data));//上传使用
             intent.putExtra("state", isHege);
             startActivity(intent);
         } else {
@@ -374,7 +375,7 @@ public class CheckItemActivity extends CarBaseActivity {
                         bean.setHasTake(true);
                         bean.setImgPos(nowImgpos);
                         onActiBackListener.onActiBackListener("上传成功：" + images.get(0).getPath());
-                        upLoadImage(1, images.get(0).getPath(), nowImgpos);
+                        upLoadImage(1, images.get(0).getPath(), pos);
 //                        convertBitmap(BitmapFactory.decodeFile(pic_path), pic_path);
 //                        throwGlideGetBit(BitmapFactory.decodeFile(pic_path),pic_path);
                     }
@@ -398,12 +399,16 @@ public class CheckItemActivity extends CarBaseActivity {
                 super.onSuccessListener(result);
                 ImageUpBean bean = new Gson().fromJson(result.toString(), ImageUpBean.class);
                 if (bean.getCode() == 200) {
-                    if (type == 0) {//判定项目中的图片上传
-
-
+                    String result_url = bean.getData().getPath();
+                    if (type == 0) {//判定项目中的图片上传--内部的图片集合如何处理需要搞一下，不要上传到服务器
+                        CheckAllBean.DataBean.CheckItemBean itemBean = mMapList.get(pos);
+                        String photoPath = itemBean.getPhotoPath();
+                        photoPath = TextUtils.isEmpty(photoPath) ? result_url :photoPath + "," + result_url;
+                        itemBean.setPhotoPath(photoPath);
                     } else {//检测图片的上传
-                        mImageBeans.get(pos).setImgUrl(bean.getData().getPath());
-
+                        mImageBeans.get(pos).setImgUrl(result_url);
+                        CheckItemPhotoBean bean_photo = mCheckItemPhotoLists.get(pos);
+                        bean_photo.setPhotoPath(result_url);
 
                     }
 

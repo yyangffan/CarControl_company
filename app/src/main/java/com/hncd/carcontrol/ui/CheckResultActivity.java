@@ -2,6 +2,7 @@ package com.hncd.carcontrol.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
@@ -44,7 +45,8 @@ public class CheckResultActivity extends CarBaseActivity {
     private List<RegistInforBean.DataBean.RegInfoBean> mMapList;
     private CheckAdapter mCheckAdapter;
     private RegistInforBean mBean;
-    private  String check_item = "";
+    private String check_item = "";
+    private String note = "";
 
     @Override
     public int getContentLayoutId() {
@@ -71,10 +73,14 @@ public class CheckResultActivity extends CarBaseActivity {
                 finish();
                 break;
             case R.id.check_result_start:
-                Intent intent = new Intent(this,CheckItemActivity.class);
-                intent.putExtra("data",check_item);
-                startActivity(intent);
-                finish();
+                if(TextUtils.isEmpty(note)) {
+                    Intent intent = new Intent(this, CheckItemActivity.class);
+                    intent.putExtra("data", check_item);
+                    startActivity(intent);
+                    finish();
+                }else{
+                    ToastShow(note);
+                }
                 break;
         }
     }
@@ -88,19 +94,22 @@ public class CheckResultActivity extends CarBaseActivity {
         RegistInforBean.DataBean data = mBean.getData();
         Integer auditStatus = data.getAuditStatus();//3可查验  4审核中 5查验完成
         switch (auditStatus) {
-            case 3:
+            case 0:
                 mBt_start.setText("开始查验");
-                mBt_start.setBackgroundResource(R.drawable.bg_appcolor);
+                break;
+            case 2:
+                mBt_start.setText("查验不合格");
+                break;
+            case 3:
+                mBt_start.setText("审核失败");
+                break;
+            case 1:
+                mBt_start.setText("审核中");
+                note = "正在审核中";
                 break;
             case 4:
-                mBt_start.setText("审核中");
-                mBt_start.setBackgroundResource(R.drawable.bg_circle_gray);
-                mBt_start.setEnabled(false);
-                break;
-            case 5:
-                mBt_start.setText("查验完成");
-                mBt_start.setBackgroundResource(R.drawable.bg_circle_gray);
-                mBt_start.setEnabled(false);
+                mBt_start.setText("审核通过");
+                note = "审核已通过";
                 break;
         }
 

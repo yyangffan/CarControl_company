@@ -23,15 +23,6 @@ public class CheckAllBean extends BaseBean{
       private List<CheckItemPhotoBean> checkItemPhoto;
       private List<CheckItemBean> checkItem;
       private List<CheckItemBean> checkItemRefit;
-      private List<Map<String,Object>> imageBeans;
-
-      public List<Map<String,Object>> getImageBeans() {
-         return imageBeans;
-      }
-
-      public void setImageBeans(List<Map<String,Object>> imageBeas) {
-         imageBeans = imageBeas;
-      }
 
       public List<CheckLineBean> getCheckLine() {
          return checkLine;
@@ -87,14 +78,137 @@ public class CheckAllBean extends BaseBean{
       }
 
       public static class CheckItemBean {
-         private String checkItemCode;
-         private String checkItemName;
          private List<LocalMedia>  picLists = new ArrayList<>();
          private int type;          //0是上半部分  1为改装部分
          private int typeone;
          private int typetwo;
          private String reason;
+         private String photoPath;
+         private Object itemCfgId;
+         private Object businessTypeCode;
+         private Object carTypeCode;
+         private Object countryInOutCode;
+         private Object useTypeCode;
+         private String checkItemCode;
+         private String checkItemName;
+         private Object checkItemSimpleName;
+         private Object attention;
+         private Object requiredFlag;
+         private Object enableFlag;
+         private Object defVal;
+         private Object orderName;
 
+         public String getPhotoPath() {
+            return photoPath;
+         }
+
+         public void setPhotoPath(String photoPath) {
+            this.photoPath = photoPath;
+         }
+
+         public Object getItemCfgId() {
+            return itemCfgId;
+         }
+
+         public void setItemCfgId(Object itemCfgId) {
+            this.itemCfgId = itemCfgId;
+         }
+
+         public Object getBusinessTypeCode() {
+            return businessTypeCode;
+         }
+
+         public void setBusinessTypeCode(Object businessTypeCode) {
+            this.businessTypeCode = businessTypeCode;
+         }
+
+         public Object getCarTypeCode() {
+            return carTypeCode;
+         }
+
+         public void setCarTypeCode(Object carTypeCode) {
+            this.carTypeCode = carTypeCode;
+         }
+
+         public Object getCountryInOutCode() {
+            return countryInOutCode;
+         }
+
+         public void setCountryInOutCode(Object countryInOutCode) {
+            this.countryInOutCode = countryInOutCode;
+         }
+
+         public Object getUseTypeCode() {
+            return useTypeCode;
+         }
+
+         public void setUseTypeCode(Object useTypeCode) {
+            this.useTypeCode = useTypeCode;
+         }
+
+         public String getCheckItemCode() {
+            return checkItemCode;
+         }
+
+         public void setCheckItemCode(String checkItemCode) {
+            this.checkItemCode = checkItemCode;
+         }
+
+         public String getCheckItemName() {
+            return checkItemName;
+         }
+
+         public void setCheckItemName(String checkItemName) {
+            this.checkItemName = checkItemName;
+         }
+
+         public Object getCheckItemSimpleName() {
+            return checkItemSimpleName;
+         }
+
+         public void setCheckItemSimpleName(Object checkItemSimpleName) {
+            this.checkItemSimpleName = checkItemSimpleName;
+         }
+
+         public Object getAttention() {
+            return attention;
+         }
+
+         public void setAttention(Object attention) {
+            this.attention = attention;
+         }
+
+         public Object getRequiredFlag() {
+            return requiredFlag;
+         }
+
+         public void setRequiredFlag(Object requiredFlag) {
+            this.requiredFlag = requiredFlag;
+         }
+
+         public Object getEnableFlag() {
+            return enableFlag;
+         }
+
+         public void setEnableFlag(Object enableFlag) {
+            this.enableFlag = enableFlag;
+         }
+
+         public Object getDefVal() {
+            return defVal;
+         }
+
+         public void setDefVal(Object defVal) {
+            this.defVal = defVal;
+         }
+
+         public Object getOrderName() {
+            return orderName;
+         }
+
+         public void setOrderName(Object orderName) {
+            this.orderName = orderName;
+         }
          public int getTypetwo() {
             return typetwo;
          }
@@ -126,23 +240,6 @@ public class CheckAllBean extends BaseBean{
          public void setType(int type) {
             this.type = type;
          }
-
-         public String getCheckItemCode() {
-            return checkItemCode;
-         }
-
-         public void setCheckItemCode(String checkItemCode) {
-            this.checkItemCode = checkItemCode;
-         }
-
-         public String getCheckItemName() {
-            return checkItemName;
-         }
-
-         public void setCheckItemName(String checkItemName) {
-            this.checkItemName = checkItemName;
-         }
-
 
          public List<LocalMedia> getPicLists() {
             return picLists;

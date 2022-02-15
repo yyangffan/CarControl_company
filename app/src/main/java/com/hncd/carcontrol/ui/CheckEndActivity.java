@@ -60,6 +60,7 @@ public class CheckEndActivity extends CarBaseActivity {
     private List<CheckAllBean.DataBean.CheckLineBean> mTongd;
     private CheckAllBean mBean;          //上一界面所填数据以及通道数据的填充
     private boolean mState = true;       //查验是否合格
+    private CheckAllBean.DataBean mUpBean;
 
 
     @Override
@@ -75,9 +76,12 @@ public class CheckEndActivity extends CarBaseActivity {
         mnowDate = simpleDateFormat.format(new Date());
         Intent intent = getIntent();
         String data = intent.getStringExtra("data");
+        String updata = intent.getStringExtra("updata");
         mState = intent.getBooleanExtra("state", true);
         mBean = new Gson().fromJson(data, CheckAllBean.class);
-        Log.e(TAG, "init: "+data );
+        mUpBean = new Gson().fromJson(updata,CheckAllBean.DataBean.class);
+
+        Log.e(TAG, "init: "+updata );
         initView();
         getData();
     }
