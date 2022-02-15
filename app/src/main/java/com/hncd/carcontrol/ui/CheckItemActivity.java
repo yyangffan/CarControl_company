@@ -406,7 +406,7 @@ public class CheckItemActivity extends CarBaseActivity {
                         photoPath = TextUtils.isEmpty(photoPath) ? result_url :photoPath + "," + result_url;
                         itemBean.setPhotoPath(photoPath);
                     } else {//检测图片的上传
-                        mImageBeans.get(pos).setImgUrl(result_url);
+//                        mImageBeans.get(pos).setImgUrl(result_url);
                         CheckItemPhotoBean bean_photo = mCheckItemPhotoLists.get(pos);
                         bean_photo.setPhotoPath(result_url);
 
