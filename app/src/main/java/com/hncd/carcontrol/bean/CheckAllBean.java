@@ -66,6 +66,7 @@ public class CheckAllBean extends BaseBean{
 
       public static class CheckLineBean {
          private String lineNo;
+         private String id;
 
          public String getLineNo() {
             return lineNo;
@@ -73,6 +74,14 @@ public class CheckAllBean extends BaseBean{
 
          public void setLineNo(String lineNo) {
             this.lineNo = lineNo;
+         }
+
+         public String getId() {
+            return id;
+         }
+
+         public void setId(String id) {
+            this.id = id;
          }
       }
 

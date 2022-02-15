@@ -4,9 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import io.reactivex.Observable;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
+import retrofit2.http.Header;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 
 public interface ApiService {
     /**
@@ -80,7 +84,7 @@ public interface ApiService {
     @POST("cancellation/getMessageInfo")
     Observable<JSONObject> getMessageInfo(@Body RequestBody body);
 
-     /**
+    /**
      * 根据流水号查询拆解视频信息
      *
      * @param body
@@ -89,6 +93,33 @@ public interface ApiService {
     @POST("cancellation/getDisassemablVideo")
     Observable<JSONObject> getDisassemablVideo(@Body RequestBody body);
 
+    /**
+     * 开始拆解
+     *
+     * @param body
+     * @return
+     */
+    @POST("cancellation/startDisassmblVideo")
+    Observable<JSONObject> startDisassmblVideo(@Body RequestBody body);
+
+    /**
+     * 结束拆解
+     *
+     * @param body
+     * @return
+     */
+    @POST("cancellation/endDisassmblVideo")
+    Observable<JSONObject> endDisassmblVideo(@Body RequestBody body);
+
+    /**
+     * 单文件上传
+     *
+     * @param map 文件
+     * @return
+     */
+    @Multipart
+    @POST("cancellation/uploadImages")
+    Observable<JSONObject> upLoadFile(@Part MultipartBody.Part map);
 
 
 }

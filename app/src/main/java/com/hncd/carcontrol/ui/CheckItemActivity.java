@@ -20,10 +20,13 @@ import com.hncd.carcontrol.R;
 import com.hncd.carcontrol.adapter.ImagePhotoAdapter;
 import com.hncd.carcontrol.adapter.JudgeAdapter;
 import com.hncd.carcontrol.base.CarBaseActivity;
+import com.hncd.carcontrol.bean.BaseBean;
 import com.hncd.carcontrol.bean.CheckAllBean;
 import com.hncd.carcontrol.dig_pop.BtPopupWindow;
 import com.hncd.carcontrol.dig_pop.BtSelectDialog;
+import com.hncd.carcontrol.utils.CarHttp;
 import com.hncd.carcontrol.utils.GlideEngine;
+import com.hncd.carcontrol.utils.HttpBackListener;
 import com.hncd.carcontrol.utils.ItemRecyDecoration;
 import com.ljy.devring.util.FileUtil;
 import com.luck.picture.lib.PictureSelector;
@@ -43,6 +46,10 @@ import com.superc.yyfflibrary.utils.titlebar.TitleUtils;
 import com.yalantis.ucrop.view.OverlayView;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.FileNameMap;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +61,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 public class CheckItemActivity extends CarBaseActivity {
 
@@ -294,6 +304,7 @@ public class CheckItemActivity extends CarBaseActivity {
                         Log.e(TAG, "onResult: " + result.get(0).getPath());
                         picLists.add(result.get(0));
                         mJudgeAdapter.notifyItemChanged(pos);
+                        upLoadImage(result.get(0).getPath());
                     }
 
                     @Override
@@ -305,6 +316,7 @@ public class CheckItemActivity extends CarBaseActivity {
                     @Override
                     public void onCusResult(List<LocalMedia> result, int position, int nowImgpos, OnActiBackListener onActiBackListener) {
                         // 自定义结果回调
+
                     }
                 });
 
@@ -325,13 +337,11 @@ public class CheckItemActivity extends CarBaseActivity {
                 .forResult(new OnResultCallbackListener<LocalMedia>() {
                     @Override
                     public void onResult(List<LocalMedia> result) {
-                        // 结果回调
                         Log.e(TAG, "onResult: " + result.get(0).getPath());
                     }
 
                     @Override
                     public void onCancel() {
-                        // 取消
                         Log.e(TAG, "onCancel: 拍照取消");
                     }
 
@@ -358,6 +368,36 @@ public class CheckItemActivity extends CarBaseActivity {
                 });
 
     }
+
+    private void upLoadImage(String path){
+        File img = new File(path);
+        String names = img.getName();
+        RequestBody requestFile = RequestBody.create(MediaType.parse(guessMimeType(img.getPath())), img);
+        MultipartBody.Part body = null;
+        try {
+            body = MultipartBody.Part.createFormData("file", URLEncoder.encode(names, "UTF-8"), requestFile);
+        } catch (UnsupportedEncodingException e) {
+            Log.e("ManOneFragment", "toAddClient: 文件名异常" + names + e.toString());
+        }
+        CarHttp.getInstance().toGetData(CarHttp.getInstance().getApiService().upLoadFile(body), new HttpBackListener() {
+            @Override
+            public void onSuccessListener(Object result) {
+                super.onSuccessListener(result);
+                BaseBean bean = new Gson().fromJson(result.toString(), BaseBean.class);
+                ToastShow(bean.getMsg());
+            }
+
+            @Override
+            public void onErrorLIstener(String error) {
+                super.onErrorLIstener(error);
+            }
+        });
+
+
+
+    }
+
+
 
     private void throwGlideGetBit(Bitmap srcBitmap, String path) {
         togeBit(srcBitmap, FileUtil.getFile(path));
@@ -502,6 +542,20 @@ public class CheckItemActivity extends CarBaseActivity {
         anim.setDuration(165);
         anim.start();
         line_startDis = go_distance;
+    }
+
+    private String guessMimeType(String path) {
+        FileNameMap fileNameMap = URLConnection.getFileNameMap();
+        String contentTypeFor = null;
+        try {
+            contentTypeFor = fileNameMap.getContentTypeFor(URLEncoder.encode(path, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        if (contentTypeFor == null) {
+            contentTypeFor = "application/octet-stream";
+        }
+        return contentTypeFor;
     }
 
 }

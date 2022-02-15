@@ -12,6 +12,6 @@
         android:layout_width="match_parent"
         android:background="@color/white"
         android:elevation="@dimen/dp_8"
-        android:layout_height="@dimen/dp_140" />s
+        android:layout_height="wrap_content" />s
 
 </LinearLayout>

@@ -28,7 +28,8 @@ public class TongdPopWindow extends PopupWindow {
     private OnAdapterClickListener mOnAdapterClickListener;
 
     public TongdPopWindow(Context context, List<CheckAllBean.DataBean.CheckLineBean> lists, String now_t, int width, int height) {
-        super(width,200);
+//        super(width,200);
+        super(width, LinearLayout.LayoutParams.WRAP_CONTENT);
         mContext = context;
         mLists = lists;
         now_tv =now_t;
