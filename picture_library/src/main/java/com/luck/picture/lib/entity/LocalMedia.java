@@ -186,6 +186,10 @@ public class LocalMedia implements Parcelable {
 
     private String title;
 
+    private String imgUrl;
+
+    private String code;
+
     public LocalMedia() {
 
     }
@@ -199,6 +203,23 @@ public class LocalMedia implements Parcelable {
         this.title = title;
         return this;
     }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     protected LocalMedia(Parcel in) {
         id = in.readLong();
         path = in.readString();
@@ -226,6 +247,8 @@ public class LocalMedia implements Parcelable {
         isOriginal = in.readByte() != 0;
         fileName = in.readString();
         title = in.readString();
+        imgUrl = in.readString();
+        code = in.readString();
         parentFolderName = in.readString();
         orientation = in.readInt();
         loadLongImageStatus = in.readInt();
@@ -264,6 +287,8 @@ public class LocalMedia implements Parcelable {
         dest.writeByte((byte) (isOriginal ? 1 : 0));
         dest.writeString(fileName);
         dest.writeString(title);
+        dest.writeString(imgUrl);
+        dest.writeString(code);
         dest.writeString(parentFolderName);
         dest.writeInt(orientation);
         dest.writeInt(loadLongImageStatus);

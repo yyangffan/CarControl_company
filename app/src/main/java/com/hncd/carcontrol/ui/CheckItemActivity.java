@@ -22,6 +22,7 @@ import com.hncd.carcontrol.adapter.JudgeAdapter;
 import com.hncd.carcontrol.base.CarBaseActivity;
 import com.hncd.carcontrol.bean.BaseBean;
 import com.hncd.carcontrol.bean.CheckAllBean;
+import com.hncd.carcontrol.bean.ImageUpBean;
 import com.hncd.carcontrol.dig_pop.BtPopupWindow;
 import com.hncd.carcontrol.dig_pop.BtSelectDialog;
 import com.hncd.carcontrol.utils.CarHttp;
@@ -189,8 +190,17 @@ public class CheckItemActivity extends CarBaseActivity {
             }
 
         }
+        List<Map<String,Object>> imgsLists = new ArrayList<>();//检测图片的存储集合
+        for (int i = 0; i < mImageBeans.size(); i++) {
+            LocalMedia localMedia = mImageBeans.get(i);
+            Map<String,Object> map = new HashMap<>();
+            map.put("title",localMedia.getTitle());
+            map.put("code",localMedia.getCode());
+            map.put("path",localMedia.getImgUrl());
+            imgsLists.add(map);
+        }
         if (canComit) {
-            mBean.getData().setImageBeans(mImageBeans);
+            mBean.getData().setImageBeans(imgsLists);
             Intent intent = new Intent(this, CheckEndActivity.class);
             intent.putExtra("data", new Gson().toJson(mBean));
             intent.putExtra("state", isHege);
@@ -287,6 +297,7 @@ public class CheckItemActivity extends CarBaseActivity {
         }
         mImagePhotoAdapter.notifyDataSetChanged();*/
     }
+
     /*判定项目的图片选择*/
     private void itemSelectPhoto(int pos) {
         CheckAllBean.DataBean.CheckItemBean itemBean = mMapList.get(pos);
@@ -304,7 +315,7 @@ public class CheckItemActivity extends CarBaseActivity {
                         Log.e(TAG, "onResult: " + result.get(0).getPath());
                         picLists.add(result.get(0));
                         mJudgeAdapter.notifyItemChanged(pos);
-                        upLoadImage(result.get(0).getPath());
+                        upLoadImage(0, result.get(0).getPath(), pos);
                     }
 
                     @Override
@@ -352,6 +363,7 @@ public class CheckItemActivity extends CarBaseActivity {
                         if (nowImgpos == mImageBeans.size()) {//新增
                             LocalMedia localMedia = images.get(0);
                             localMedia.setTitle(bean.getCheckItemCode() + ":" + bean.getCheckItemName());
+                            localMedia.setCode(bean.getCheckItemCode());
                             mImageBeans.add(localMedia);
                             mImagePhotoAdapter.notifyItemInserted(nowImgpos);
                         } else {//修改
@@ -361,7 +373,8 @@ public class CheckItemActivity extends CarBaseActivity {
                         }
                         bean.setHasTake(true);
                         bean.setImgPos(nowImgpos);
-                        onActiBackListener.onActiBackListener("http://algejklwejlwejlweg"+images.get(0).getPath());
+                        onActiBackListener.onActiBackListener("上传成功：" + images.get(0).getPath());
+                        upLoadImage(1, images.get(0).getPath(), nowImgpos);
 //                        convertBitmap(BitmapFactory.decodeFile(pic_path), pic_path);
 //                        throwGlideGetBit(BitmapFactory.decodeFile(pic_path),pic_path);
                     }
@@ -369,13 +382,13 @@ public class CheckItemActivity extends CarBaseActivity {
 
     }
 
-    private void upLoadImage(String path){
+    private void upLoadImage(int type, String path, int pos) {
         File img = new File(path);
         String names = img.getName();
         RequestBody requestFile = RequestBody.create(MediaType.parse(guessMimeType(img.getPath())), img);
         MultipartBody.Part body = null;
         try {
-            body = MultipartBody.Part.createFormData("file", URLEncoder.encode(names, "UTF-8"), requestFile);
+            body = MultipartBody.Part.createFormData("upfile", URLEncoder.encode(names, "UTF-8"), requestFile);
         } catch (UnsupportedEncodingException e) {
             Log.e("ManOneFragment", "toAddClient: 文件名异常" + names + e.toString());
         }
@@ -383,8 +396,19 @@ public class CheckItemActivity extends CarBaseActivity {
             @Override
             public void onSuccessListener(Object result) {
                 super.onSuccessListener(result);
-                BaseBean bean = new Gson().fromJson(result.toString(), BaseBean.class);
-                ToastShow(bean.getMsg());
+                ImageUpBean bean = new Gson().fromJson(result.toString(), ImageUpBean.class);
+                if (bean.getCode() == 200) {
+                    if (type == 0) {//判定项目中的图片上传
+
+
+                    } else {//检测图片的上传
+                        mImageBeans.get(pos).setImgUrl(bean.getData().getPath());
+
+
+                    }
+
+                }
+
             }
 
             @Override
@@ -394,9 +418,7 @@ public class CheckItemActivity extends CarBaseActivity {
         });
 
 
-
     }
-
 
 
     private void throwGlideGetBit(Bitmap srcBitmap, String path) {

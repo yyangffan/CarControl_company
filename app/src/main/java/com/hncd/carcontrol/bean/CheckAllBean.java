@@ -5,6 +5,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class CheckAllBean extends BaseBean{
 
@@ -22,13 +23,13 @@ public class CheckAllBean extends BaseBean{
       private List<CheckItemPhotoBean> checkItemPhoto;
       private List<CheckItemBean> checkItem;
       private List<CheckItemBean> checkItemRefit;
-      private List<LocalMedia> imageBeans;
+      private List<Map<String,Object>> imageBeans;
 
-      public List<LocalMedia> getImageBeans() {
+      public List<Map<String,Object>> getImageBeans() {
          return imageBeans;
       }
 
-      public void setImageBeans(List<LocalMedia> imageBeas) {
+      public void setImageBeans(List<Map<String,Object>> imageBeas) {
          imageBeans = imageBeas;
       }
 
