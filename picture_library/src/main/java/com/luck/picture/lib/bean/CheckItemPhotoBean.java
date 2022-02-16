@@ -22,6 +22,33 @@ public class CheckItemPhotoBean implements Parcelable {
     private String enableFlag;
     private String defVal;
     private String orderName;
+    private String edcCheckLogOutPhotoId;
+    private String itemCfgPhotoId;
+    private String createTime;
+
+    public String getEdcCheckLogOutPhotoId() {
+        return edcCheckLogOutPhotoId;
+    }
+
+    public void setEdcCheckLogOutPhotoId(String edcCheckLogOutPhotoId) {
+        this.edcCheckLogOutPhotoId = edcCheckLogOutPhotoId;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getItemCfgPhotoId() {
+        return itemCfgPhotoId;
+    }
+
+    public void setItemCfgPhotoId(String itemCfgPhotoId) {
+        this.itemCfgPhotoId = itemCfgPhotoId;
+    }
 
     public String getCheckItemCode() {
         return checkItemCode;
@@ -174,6 +201,9 @@ public class CheckItemPhotoBean implements Parcelable {
         dest.writeString(this.enableFlag);
         dest.writeString(this.defVal);
         dest.writeString(this.orderName);
+        dest.writeString(this.edcCheckLogOutPhotoId);
+        dest.writeString(this.createTime);
+        dest.writeString(this.itemCfgPhotoId);
     }
 
     public void readFromParcel(Parcel source) {
@@ -193,6 +223,9 @@ public class CheckItemPhotoBean implements Parcelable {
         this.enableFlag = source.readString();
         this.defVal = source.readString();
         this.orderName = source.readString();
+        this.edcCheckLogOutPhotoId = source.readString();
+        this.createTime = source.readString();
+        this.itemCfgPhotoId = source.readString();
     }
 
     public CheckItemPhotoBean() {
@@ -215,6 +248,9 @@ public class CheckItemPhotoBean implements Parcelable {
         this.enableFlag = in.readString();
         this.defVal = in.readString();
         this.orderName = in.readString();
+        this.edcCheckLogOutPhotoId = in.readString();
+        this.createTime = in.readString();
+        this.itemCfgPhotoId = in.readString();
     }
 
     public static final Parcelable.Creator<CheckItemPhotoBean> CREATOR = new Parcelable.Creator<CheckItemPhotoBean>() {

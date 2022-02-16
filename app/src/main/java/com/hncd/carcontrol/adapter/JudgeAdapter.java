@@ -104,15 +104,15 @@ public class JudgeAdapter extends RecyclerView.Adapter<JudgeAdapter.ViewHolder> 
         });
 
         int type = bean.getType();
-        if (type == 0) {
-            int typeone = bean.getTypeone();
+        if (type == 0) {//由于需求变更这里才变成了这样
+            int typeone = bean.getIsOkFlag();
             vh.mItemJudgeCheck.setText(typeone == 0 ? "未判定" : (typeone == 3 ? "不合格" : "合格"));
             vh.mItemJudgeCheck.setTextColor(mContext.getResources().getColor(typeone == 0 ? R.color.picture_color_light_grey : R.color.white));
             vh.mItemJudgeCheck.setBackgroundResource(typeone == 0 ? R.drawable.bg_circle_gray : (typeone == 1 ? R.drawable.bg_appcolor : R.drawable.bg_circle_red));
             vh.mItemJudgeGroup.setVisibility(typeone==3?View.VISIBLE:View.GONE);
             vh.mItemJudgeEdtRea.setText(typeone==3?bean.getReason():"");
         } else if (type == 1) {
-            int typetwo = bean.getTypetwo();
+            int typetwo = bean.getIsOkFlag();
             vh.mItemJudgeCheck.setText(typetwo == 0 ? "未判定" : (typetwo == 3 ? "不合格" : (typetwo == 1?"合格(未改装)":"合格(改装)")));
             vh.mItemJudgeCheck.setTextColor(mContext.getResources().getColor(typetwo == 0 ? R.color.picture_color_light_grey : (typetwo == 2?R.color.red:R.color.white)));
             vh.mItemJudgeCheck.setBackgroundResource(typetwo == 0 ? R.drawable.bg_circle_gray : (typetwo == 1 ? R.drawable.bg_appcolor : (typetwo == 2?R.drawable.bg_yel:R.drawable.bg_circle_red)));

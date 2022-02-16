@@ -55,7 +55,7 @@ public class TongdPopWindow extends PopupWindow {
                 CheckAllBean.DataBean.CheckLineBean stringObjectMap = mLists.get(position);
                 String name = stringObjectMap.getLineNo();
                 if(mOnAdapterClickListener!=null){
-                    mOnAdapterClickListener.onAdapterListener(name);
+                    mOnAdapterClickListener.onAdapterListener(name,stringObjectMap.getId());
                     dismiss();
                 }
 
@@ -76,7 +76,7 @@ public class TongdPopWindow extends PopupWindow {
     }
 
     public interface OnAdapterClickListener{
-        void onAdapterListener(String name);
+        void onAdapterListener(String name,String id);
     }
 
 }

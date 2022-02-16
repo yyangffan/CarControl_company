@@ -185,7 +185,7 @@ public class DissVideoActivity extends CarBaseActivity {
         mTongdPopWindow = new TongdPopWindow(this, mTongd, mDissVideoTd.getText().toString(), mCheckEndLL.getWidth(), LinearLayout.LayoutParams.WRAP_CONTENT);
         mTongdPopWindow.setOnAdapterClickListener(new TongdPopWindow.OnAdapterClickListener() {
             @Override
-            public void onAdapterListener(String name) {
+            public void onAdapterListener(String name,String id) {
                 mDissVideoTd.setText(name);
             }
         });

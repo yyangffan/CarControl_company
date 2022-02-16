@@ -12,12 +12,15 @@ import com.hncd.carcontrol.adapter.CheckAdapter;
 import com.hncd.carcontrol.base.CarBaseActivity;
 import com.hncd.carcontrol.bean.BaseBean;
 import com.hncd.carcontrol.bean.CheckAllBean;
+import com.hncd.carcontrol.bean.EventMessage;
 import com.hncd.carcontrol.bean.RegistInforBean;
 import com.hncd.carcontrol.utils.CarHttp;
 import com.hncd.carcontrol.utils.HttpBackListener;
 import com.hncd.carcontrol.utils.ItemRecyDecoration;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.superc.yyfflibrary.utils.titlebar.TitleUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,9 +78,11 @@ public class CheckResultActivity extends CarBaseActivity {
             case R.id.check_result_start:
                 if(TextUtils.isEmpty(note)) {
                     Intent intent = new Intent(this, CheckItemActivity.class);
+                    intent.putExtra("lsh",data_result);
                     intent.putExtra("data", check_item);
                     startActivity(intent);
                     finish();
+                    EventBus.getDefault().post(new EventMessage("msg"));
                 }else{
                     ToastShow(note);
                 }

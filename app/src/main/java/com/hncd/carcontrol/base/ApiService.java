@@ -112,6 +112,24 @@ public interface ApiService {
     Observable<JSONObject> endDisassmblVideo(@Body RequestBody body);
 
     /**
+     * 提交结论
+     *
+     * @param body
+     * @return
+     */
+    @POST("cancellation/saveInfo")
+    Observable<JSONObject> saveInfo(@Body RequestBody body);
+
+    /**
+     * 根据流水号获取查验信息（查验开始后先调用）---反显接口调用
+     *
+     * @param body
+     * @return
+     */
+    @POST("cancellation/getCheckInfo")
+    Observable<JSONObject> getCheckInfo(@Body RequestBody body);
+
+    /**
      * 单文件上传
      *
      * @param map 文件

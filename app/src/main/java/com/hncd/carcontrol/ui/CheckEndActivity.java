@@ -12,8 +12,12 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.hncd.carcontrol.R;
 import com.hncd.carcontrol.base.CarBaseActivity;
+import com.hncd.carcontrol.bean.BaseBean;
 import com.hncd.carcontrol.bean.CheckAllBean;
 import com.hncd.carcontrol.dig_pop.TongdPopWindow;
+import com.hncd.carcontrol.utils.CarHttp;
+import com.hncd.carcontrol.utils.HttpBackListener;
+import com.luck.picture.lib.bean.CheckItemPhotoBean;
 import com.superc.yyfflibrary.utils.titlebar.TitleUtils;
 
 import java.text.SimpleDateFormat;
@@ -26,6 +30,8 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 public class CheckEndActivity extends CarBaseActivity {
 
@@ -61,6 +67,10 @@ public class CheckEndActivity extends CarBaseActivity {
     private CheckAllBean mBean;          //上一界面所填数据以及通道数据的填充
     private boolean mState = true;       //查验是否合格
     private CheckAllBean.DataBean mUpBean;
+    private CheckAllBean.DataBean.CheckApprove mCheckApprove;
+    private String td_id = "";
+    private Map<String,Object> map_up;
+    private Map<String,Object> map_aprove;
 
 
     @Override
@@ -79,9 +89,10 @@ public class CheckEndActivity extends CarBaseActivity {
         String updata = intent.getStringExtra("updata");
         mState = intent.getBooleanExtra("state", true);
         mBean = new Gson().fromJson(data, CheckAllBean.class);
-        mUpBean = new Gson().fromJson(updata,CheckAllBean.DataBean.class);
-
-        Log.e(TAG, "init: "+updata );
+        mUpBean = new Gson().fromJson(updata, CheckAllBean.DataBean.class);
+        mCheckApprove = mUpBean.getCheckApprove();
+        map_aprove = new HashMap<>();
+        Log.e(TAG, "init: " + updata);
         initView();
         getData();
     }
@@ -101,11 +112,13 @@ public class CheckEndActivity extends CarBaseActivity {
                 break;
         }
     }
-    private void initView(){
+
+    private void initView() {
         mCheckEndName.requestFocus();
         mTongd = new ArrayList<>();
         mTongd.addAll(mBean.getData().getCheckLine());
         mCheckEndTd.setText(mTongd.get(0).getLineNo());
+        td_id = mTongd.get(0).getId();
     }
 
     private void getData() {
@@ -116,16 +129,31 @@ public class CheckEndActivity extends CarBaseActivity {
         mCheckEndYwtype.setText("补领登记证书");
         mCheckEndHaopai.setText("大型汽车/你想象不到");
         mCheckEndDate.setText(mnowDate);
-
+        map_up =  zhegnHdata();
     }
 
     private void toComit() {
-        ToastShow("提交结论");
-        Map<String, Object> map = new HashMap<>();
-        map.put("remarks", mCheckEndRemarks.getText().toString());
-        map.put("xny_yes", mCheckEndRbno.isChecked() ? "否" : "是");
-        map.put("td", mCheckEndTd.getText().toString());
-        Log.e(TAG, "toComit: " + new Gson().toJson(map));
+        map_aprove.put("checkRemark",mCheckEndRemarks.getText().toString());
+        map_aprove.put("checkStatus",mState ? "0" : "1");//查验状态 0：合格 1：不合格
+        map_aprove.put("nvrLineId",td_id);//通道id
+        map_aprove.put("newEnergyFlag",mCheckEndRbno.isChecked() ? "1" : "0");//是否新能源 0:是  1：否
+        map_up.put("checkApprove",map_aprove);
+
+        String result = new Gson().toJson(map_up);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=UTF-8"), result);
+        CarHttp.getInstance().toGetData(CarHttp.getInstance().getApiService().saveInfo(requestBody), new HttpBackListener() {
+            @Override
+            public void onSuccessListener(Object result) {
+                super.onSuccessListener(result);
+                BaseBean bean = new Gson().fromJson(result.toString(), BaseBean.class);
+                ToastShow(bean.getMsg());
+            }
+
+            @Override
+            public void onErrorLIstener(String error) {
+                super.onErrorLIstener(error);
+            }
+        });
 
 
     }
@@ -134,11 +162,82 @@ public class CheckEndActivity extends CarBaseActivity {
         mTongdPopWindow = new TongdPopWindow(this, mTongd, mCheckEndTd.getText().toString(), mCheckEndLL.getWidth(), LinearLayout.LayoutParams.WRAP_CONTENT);
         mTongdPopWindow.setOnAdapterClickListener(new TongdPopWindow.OnAdapterClickListener() {
             @Override
-            public void onAdapterListener(String name) {
+            public void onAdapterListener(String name, String id) {
                 mCheckEndTd.setText(name);
+                td_id = id;
             }
         });
-        mTongdPopWindow.showAsDropDown(mCheckEndLL,0,10);
+        mTongdPopWindow.showAsDropDown(mCheckEndLL, 0, 10);
     }
+
+    /*数据整合-不是我想这样的（设计问题）我也不想这样*/
+    private Map<String, Object> zhegnHdata() {
+        CheckAllBean.DataBean.CheckApprove checkApprove = mUpBean.getCheckApprove();
+        String checkDate = checkApprove.getCheckDate();
+        String lsh = mCheckApprove.getLsh();
+        map_aprove.put("checkLogOutApproveId",checkApprove.getCheckLogOutApproveId());
+        map_aprove.put("lsh",lsh);
+        map_aprove.put("deptCode",checkApprove.getDeptCode());
+        map_aprove.put("checkNum",checkApprove.getCheckNum());
+        map_aprove.put("checkDate",checkApprove.getCheckDate());
+        map_aprove.put("checkPeople",checkApprove.getCheckPeople());
+        map_aprove.put("checkStartDate",checkApprove.getCheckStartDate());
+
+
+        Map<String, Object> map_result = new HashMap<>();
+        map_result.put("opreatType", mUpBean.getOpreatType());
+
+        List<CheckAllBean.DataBean.CheckItemBean> checkItem = mUpBean.getCheckItem();//判定项目
+        List<Map<String, Object>> list_item = new ArrayList<>();
+        for (CheckAllBean.DataBean.CheckItemBean bean : checkItem) {
+            Map<String, Object> map_item = new HashMap<>();
+            map_item.put("edcCheckLogOutId", bean.getEdcCheckLogOutId());
+            map_item.put("lsh", lsh);
+            map_item.put("itemCode", bean.getCheckItemCode());
+            map_item.put("itemName", bean.getCheckItemName());
+            map_item.put("isOkFlag", bean.getIsOkFlag());
+            map_item.put("reason", bean.getReason());
+            map_item.put("photoPath", bean.getPhotoPath());
+            map_item.put("itemCfgId", bean.getItemCfgId());
+            map_item.put("createTime", checkDate);
+            list_item.add(map_item);
+        }
+        map_result.put("checkItem", list_item);
+
+        List<CheckAllBean.DataBean.CheckItemBean> checkItemRefit = mUpBean.getCheckItemRefit();//改装项目
+        List<Map<String, Object>> list_refit = new ArrayList<>();
+        for (CheckAllBean.DataBean.CheckItemBean bean : checkItemRefit) {
+            Map<String, Object> map_refit = new HashMap<>();
+            map_refit.put("edcCheckLogOutRefitId", bean.getEdcCheckLogOutId());
+            map_refit.put("lsh", lsh);
+            map_refit.put("itemCode", bean.getCheckItemCode());
+            map_refit.put("itemName", bean.getCheckItemName());
+            map_refit.put("isOkFlag", bean.getIsOkFlag());
+            map_refit.put("reason", bean.getReason());
+            map_refit.put("photoPath", bean.getPhotoPath());
+            map_refit.put("itemCfgRefitId", bean.getItemCfgRefitId());
+            map_refit.put("createTime", checkDate);
+            list_refit.add(map_refit);
+        }
+        map_result.put("checkItemRefit", list_refit);
+
+        List<CheckItemPhotoBean> checkItemPhoto = mUpBean.getCheckItemPhoto();//拍照项目
+        List<Map<String,Object>> list_photo = new ArrayList<>();
+        for (CheckItemPhotoBean bean : checkItemPhoto) {
+            Map<String,Object> map_photo = new HashMap<>();
+            map_photo.put("edcCheckLogOutPhotoId", bean.getEdcCheckLogOutPhotoId());
+            map_photo.put("lsh", lsh);
+            map_photo.put("itemCode", bean.getCheckItemCode());
+            map_photo.put("itemName", bean.getCheckItemName());
+            map_photo.put("photoPath", bean.getPhotoPath());
+            map_photo.put("itemCfgPhotoId", bean.getItemCfgPhotoId());
+            map_photo.put("createTime", bean.getCreateTime());
+            list_photo.add(map_photo);
+        }
+        map_result.put("checkItemPhoto",list_photo);
+
+        return map_result;
+    }
+
 
 }

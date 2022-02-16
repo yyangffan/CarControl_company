@@ -51,7 +51,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,6 +108,7 @@ public class CheckItemActivity extends CarBaseActivity {
     private BtSelectDialog mbt_Top, mbt_bt;
     private String[][] mStrs_tp = new String[][]{{"合格", "1"}, {"不合格", "3"}, {"未判定", "0"}};
     private String[][] mStrs_bt = new String[][]{{"合格（未改装）", "1"}, {"合格（改装）", "2"}, {"不合格", "3"}, {"未判定", "0"}};
+    private CheckAllBean.DataBean.CheckApprove mCheckApprove;
 
     @Override
     public int getContentLayoutId() {
@@ -122,7 +125,16 @@ public class CheckItemActivity extends CarBaseActivity {
         mSmart.setEnableOverScrollBounce(true);//是否启用越界回弹
         Intent intent = getIntent();
         String data = intent.getStringExtra("data");
+        String lsh = intent.getStringExtra("lsh");
         mBean = new Gson().fromJson(data, CheckAllBean.class);
+        mBean.getData().setOpreatType("0");
+        mCheckApprove = mBean.getData().getCheckApprove();
+        mCheckApprove.setCheckDate(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()));
+        mCheckApprove.setCheckStartDate(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()));
+        mCheckApprove.setLsh(lsh);
+        mCheckApprove.setCheckPeople(mLoginBean.getData().getUserIdX());
+        mCheckApprove.setDeptCode(mLoginBean.getData().getDeptId());
+        mBean.getData().setCheckApprove(mCheckApprove);
         mCheckItemPhotoLists = mBean.getData().getCheckItemPhoto();
         Log.e(TAG, "init: " + new Gson().toJson(mBean));
         initViews();
@@ -167,7 +179,7 @@ public class CheckItemActivity extends CarBaseActivity {
         for (int i = 0; i < mMapList.size(); i++) {
             CheckAllBean.DataBean.CheckItemBean checkItemBean = mMapList.get(i);
             if (checkItemBean.getType() == 0) {//上部分
-                int typeone = checkItemBean.getTypeone();
+                int typeone = checkItemBean.getIsOkFlag();
                 if (typeone == 3) {//不合格
                     isHege = false;
                     if (TextUtils.isEmpty(checkItemBean.getReason())) {
@@ -179,7 +191,7 @@ public class CheckItemActivity extends CarBaseActivity {
                     return;
                 }
             } else {//改装部分
-                int typetwo = checkItemBean.getTypetwo();
+                int typetwo = checkItemBean.getIsOkFlag();
                 if (typetwo == 3) {//不合格
                     isHege = false;
                     if (TextUtils.isEmpty(checkItemBean.getReason())) {
@@ -190,6 +202,11 @@ public class CheckItemActivity extends CarBaseActivity {
             }
 
         }
+        if(mImageBeans.size() == 0){
+            ToastShow("请对拍照项目拍照");
+            return;
+        }
+
         List<CheckItemPhotoBean> photoLists = new ArrayList<>();//检测图片的存储集合
         for (int i = 0; i < mBean.getData().getCheckItemPhoto().size(); i++) {
             CheckItemPhotoBean checkItemPhotoBean = mBean.getData().getCheckItemPhoto().get(i);
@@ -199,7 +216,10 @@ public class CheckItemActivity extends CarBaseActivity {
         }
         mBean_data.setCheckItem(mBean.getData().getCheckItem());
         mBean_data.setCheckItemRefit(mBean.getData().getCheckItemRefit());
+        mBean_data.setCheckApprove(mBean.getData().getCheckApprove());
         mBean_data.setCheckItemPhoto(photoLists);
+        mBean_data.setOpreatType(mBean.getData().getOpreatType());
+
         if (canComit) {
             Intent intent = new Intent(this, CheckEndActivity.class);
             intent.putExtra("data", new Gson().toJson(mBean));//通道使用
@@ -239,11 +259,11 @@ public class CheckItemActivity extends CarBaseActivity {
                 int type = map.getType();
                 if (type == 0) {//TODO 这里还得改tmd应该跟改装那个一样下方会有一个显示合格、不合格的区分
                     mTp_bean = map;
-                    mbt_Top.setData(map.getCheckItemName(), map.getTypeone());
+                    mbt_Top.setData(map.getCheckItemName(), map.getIsOkFlag());
                     mbt_Top.show();
                 } else if (type == 1) {
                     mBt_bean = map;
-                    mbt_bt.setData(map.getCheckItemName(), map.getTypetwo());
+                    mbt_bt.setData(map.getCheckItemName(), map.getIsOkFlag());
                     mbt_bt.show();
                 }
             }
@@ -408,6 +428,7 @@ public class CheckItemActivity extends CarBaseActivity {
                     } else {//检测图片的上传
 //                        mImageBeans.get(pos).setImgUrl(result_url);
                         CheckItemPhotoBean bean_photo = mCheckItemPhotoLists.get(pos);
+                        bean_photo.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()));
                         bean_photo.setPhotoPath(result_url);
 
                     }
@@ -484,7 +505,7 @@ public class CheckItemActivity extends CarBaseActivity {
                     CheckAllBean.DataBean.CheckItemBean map = mMapList.get(i);
                     int type = map.getType();
                     if (type == 0) {
-                        map.setTypeone(1);
+                        map.setIsOkFlag(1);
                     }
                 }
                 mJudgeAdapter.notifyDataSetChanged();
@@ -497,7 +518,7 @@ public class CheckItemActivity extends CarBaseActivity {
                     CheckAllBean.DataBean.CheckItemBean map = mMapList.get(i);
                     int type = map.getType();
                     if (type == 1) {
-                        map.setTypetwo(1);
+                        map.setIsOkFlag(1);
                     }
                 }
                 mJudgeAdapter.notifyDataSetChanged();
@@ -509,9 +530,9 @@ public class CheckItemActivity extends CarBaseActivity {
                     CheckAllBean.DataBean.CheckItemBean map = mMapList.get(i);
                     int type = map.getType();
                     if (type == 0) {
-                        map.setTypeone(0);
+                        map.setIsOkFlag(0);
                     } else if (type == 1) {
-                        map.setTypetwo(0);
+                        map.setIsOkFlag(0);
                     }
                 }
                 mJudgeAdapter.notifyDataSetChanged();
@@ -524,7 +545,7 @@ public class CheckItemActivity extends CarBaseActivity {
         mbt_Top.setOnDigBackListener(new BtSelectDialog.OnDigBackListener() {
             @Override
             public void onDigBackListener(int type) {
-                mTp_bean.setTypeone(type);
+                mTp_bean.setIsOkFlag(type);
                 mJudgeAdapter.notifyItemChanged(clickPos);
             }
         });
@@ -534,7 +555,7 @@ public class CheckItemActivity extends CarBaseActivity {
         mbt_bt.setOnDigBackListener(new BtSelectDialog.OnDigBackListener() {
             @Override
             public void onDigBackListener(int type) {
-                mBt_bean.setTypetwo(type);
+                mBt_bean.setIsOkFlag(type);
                 mJudgeAdapter.notifyItemChanged(clickPos);
             }
         });

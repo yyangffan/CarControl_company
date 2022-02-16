@@ -23,6 +23,27 @@ public class CheckAllBean extends BaseBean{
       private List<CheckItemPhotoBean> checkItemPhoto;
       private List<CheckItemBean> checkItem;
       private List<CheckItemBean> checkItemRefit;
+      private CheckApprove checkApprove;
+      private String opreatType; //0新增，1更新
+
+      public String getOpreatType() {
+         return opreatType;
+      }
+
+      public void setOpreatType(String opreatType) {
+         this.opreatType = opreatType;
+      }
+
+      public CheckApprove getCheckApprove() {
+         if(checkApprove == null){
+            checkApprove = new CheckApprove();
+         }
+         return checkApprove;
+      }
+
+      public void setCheckApprove(CheckApprove checkApprove) {
+         this.checkApprove = checkApprove;
+      }
 
       public List<CheckLineBean> getCheckLine() {
          return checkLine;
@@ -80,11 +101,14 @@ public class CheckAllBean extends BaseBean{
       public static class CheckItemBean {
          private List<LocalMedia>  picLists = new ArrayList<>();
          private int type;          //0是上半部分  1为改装部分
-         private int typeone;
-         private int typetwo;
+         private int isOkFlag;
          private String reason;
          private String photoPath;
+         private String edcCheckLogOutId;
+         private String edcCheckLogOutRefitId;
+         private String createTime;
          private Object itemCfgId;
+         private Object itemCfgRefitId;
          private Object businessTypeCode;
          private Object carTypeCode;
          private Object countryInOutCode;
@@ -97,6 +121,46 @@ public class CheckAllBean extends BaseBean{
          private Object enableFlag;
          private Object defVal;
          private Object orderName;
+
+         public String getCreateTime() {
+            return createTime;
+         }
+
+         public void setCreateTime(String createTime) {
+            this.createTime = createTime;
+         }
+
+         public Object getItemCfgRefitId() {
+            return itemCfgRefitId;
+         }
+
+         public void setItemCfgRefitId(Object itemCfgRefitId) {
+            this.itemCfgRefitId = itemCfgRefitId;
+         }
+
+         public String getEdcCheckLogOutRefitId() {
+            return edcCheckLogOutRefitId;
+         }
+
+         public void setEdcCheckLogOutRefitId(String edcCheckLogOutRefitId) {
+            this.edcCheckLogOutRefitId = edcCheckLogOutRefitId;
+         }
+
+         public String getEdcCheckLogOutId() {
+            return edcCheckLogOutId;
+         }
+
+         public void setEdcCheckLogOutId(String edcCheckLogOutId) {
+            this.edcCheckLogOutId = edcCheckLogOutId;
+         }
+
+         public int getIsOkFlag() {
+            return isOkFlag;
+         }
+
+         public void setIsOkFlag(int isOkFlag) {
+            this.isOkFlag = isOkFlag;
+         }
 
          public String getPhotoPath() {
             return photoPath;
@@ -209,13 +273,6 @@ public class CheckAllBean extends BaseBean{
          public void setOrderName(Object orderName) {
             this.orderName = orderName;
          }
-         public int getTypetwo() {
-            return typetwo;
-         }
-
-         public void setTypetwo(int typetwo) {
-            this.typetwo = typetwo;
-         }
 
          public String getReason() {
             return reason;
@@ -225,13 +282,6 @@ public class CheckAllBean extends BaseBean{
             this.reason = reason;
          }
 
-         public int getTypeone() {
-            return typeone;
-         }
-
-         public void setTypeone(int typeone) {
-            this.typeone = typeone;
-         }
 
          public int getType() {
             return type;
@@ -250,6 +300,99 @@ public class CheckAllBean extends BaseBean{
          }
       }
 
+   public static class CheckApprove{
+      private String checkLogOutApproveId,lsh,deptCode,checkNum,checkPeople,checkStatus,checkRemark,nvrLineId,newEnergyFlag;
+      private String checkDate,checkStartDate;
 
+      public String getCheckLogOutApproveId() {
+         return checkLogOutApproveId;
+      }
+
+      public void setCheckLogOutApproveId(String checkLogOutApproveId) {
+         this.checkLogOutApproveId = checkLogOutApproveId;
+      }
+
+      public String getLsh() {
+         return lsh;
+      }
+
+      public void setLsh(String lsh) {
+         this.lsh = lsh;
+      }
+
+      public String getDeptCode() {
+         return deptCode;
+      }
+
+      public void setDeptCode(String deptCode) {
+         this.deptCode = deptCode;
+      }
+
+      public String getCheckNum() {
+         return checkNum;
+      }
+
+      public void setCheckNum(String checkNum) {
+         this.checkNum = checkNum;
+      }
+
+      public String getCheckPeople() {
+         return checkPeople;
+      }
+
+      public void setCheckPeople(String checkPeople) {
+         this.checkPeople = checkPeople;
+      }
+
+      public String getCheckStatus() {
+         return checkStatus;
+      }
+
+      public void setCheckStatus(String checkStatus) {
+         this.checkStatus = checkStatus;
+      }
+
+      public String getCheckRemark() {
+         return checkRemark;
+      }
+
+      public void setCheckRemark(String checkRemark) {
+         this.checkRemark = checkRemark;
+      }
+
+      public String getNvrLineId() {
+         return nvrLineId;
+      }
+
+      public void setNvrLineId(String nvrLineId) {
+         this.nvrLineId = nvrLineId;
+      }
+
+      public String getNewEnergyFlag() {
+         return newEnergyFlag;
+      }
+
+      public void setNewEnergyFlag(String newEnergyFlag) {
+         this.newEnergyFlag = newEnergyFlag;
+      }
+
+      public String getCheckDate() {
+         return checkDate;
+      }
+
+      public void setCheckDate(String checkDate) {
+         this.checkDate = checkDate;
+      }
+
+      public String getCheckStartDate() {
+         return checkStartDate;
+      }
+
+      public void setCheckStartDate(String checkStartDate) {
+         this.checkStartDate = checkStartDate;
+      }
    }
+
+
+}
 }

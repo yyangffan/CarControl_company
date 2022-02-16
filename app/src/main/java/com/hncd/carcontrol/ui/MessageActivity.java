@@ -7,8 +7,10 @@ import com.hncd.carcontrol.R;
 import com.hncd.carcontrol.adapter.MessageAdapter;
 import com.hncd.carcontrol.base.CarBaseActivity;
 import com.hncd.carcontrol.bean.BaseBean;
+import com.hncd.carcontrol.bean.EventMessage;
 import com.hncd.carcontrol.bean.LoginBean;
 import com.hncd.carcontrol.bean.MessageListBean;
+import com.hncd.carcontrol.dig_pop.NoteDialog;
 import com.hncd.carcontrol.utils.CarHttp;
 import com.hncd.carcontrol.utils.HttpBackListener;
 import com.hncd.carcontrol.utils.ItemRecyDecoration;
@@ -17,6 +19,9 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.superc.yyfflibrary.utils.titlebar.TitleUtils;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -155,6 +160,15 @@ public class MessageActivity extends CarBaseActivity {
                 super.onErrorLIstener(error);
             }
         });
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getEventMsgt(EventMessage msg) {
+        if (msg.getMessage().equals("msg")) {
+            mSmart.setEnableLoadMore(true);
+            pageNum = 1;
+            getData();
+        }
     }
 
 }
