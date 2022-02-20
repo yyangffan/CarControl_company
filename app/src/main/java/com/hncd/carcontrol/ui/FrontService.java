@@ -16,8 +16,10 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.hncd.carcontrol.R;
 import com.hncd.carcontrol.base.Constant;
+import com.hncd.carcontrol.bean.EventMessage;
 import com.hncd.carcontrol.utils.CarShareUtil;
 
+import org.greenrobot.eventbus.EventBus;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -103,7 +105,7 @@ public class FrontService extends Service {
     }
 
     private void toConnectSocket(){
-
+//        EventBus.getDefault().post(new EventMessage("msg"));
         mUser_id = (String) CarShareUtil.getInstance().get(CarShareUtil.APP_USERID, "");
         String connect_url = Constant.BASE_URL+"webSocket/"+mUser_id;
         initSocket(connect_url);

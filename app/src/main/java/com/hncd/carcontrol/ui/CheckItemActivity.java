@@ -97,14 +97,14 @@ public class CheckItemActivity extends CarBaseActivity {
     TextView mCheckItemPhotoWatermark;
 
     private BtPopupWindow mBtPopupWindow;
-    private List<CheckAllBean.DataBean.CheckItemBean> mMapList;
+    private List<CheckAllBean.DataBean.CheckItemBean> mMapList;         //查验项目集合---判定项目、改装项目整合
     private JudgeAdapter mJudgeAdapter;
-    private List<LocalMedia> mImageBeans;
+    private List<LocalMedia> mImageBeans;                               //检测图片集合
     private ImagePhotoAdapter mImagePhotoAdapter;
     private String waterMarks = "";
     private Bitmap mBit_waterMarkers;
     private CheckAllBean mBean;
-    private List<CheckItemPhotoBean> mCheckItemPhotoLists;
+    private List<CheckItemPhotoBean> mCheckItemPhotoLists;              //图片检测项目集合
     private BtSelectDialog mbt_Top, mbt_bt;
     private String[][] mStrs_tp = new String[][]{{"合格", "1"}, {"不合格", "3"}, {"未判定", "0"}};
     private String[][] mStrs_bt = new String[][]{{"合格（未改装）", "1"}, {"合格（改装）", "2"}, {"不合格", "3"}, {"未判定", "0"}};
@@ -127,7 +127,6 @@ public class CheckItemActivity extends CarBaseActivity {
         String data = intent.getStringExtra("data");
         String lsh = intent.getStringExtra("lsh");
         mBean = new Gson().fromJson(data, CheckAllBean.class);
-        mBean.getData().setOpreatType("0");
         mCheckApprove = mBean.getData().getCheckApprove();
         mCheckApprove.setCheckDate(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()));
         mCheckApprove.setCheckStartDate(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()));
@@ -218,7 +217,7 @@ public class CheckItemActivity extends CarBaseActivity {
         mBean_data.setCheckItemRefit(mBean.getData().getCheckItemRefit());
         mBean_data.setCheckApprove(mBean.getData().getCheckApprove());
         mBean_data.setCheckItemPhoto(photoLists);
-        mBean_data.setOpreatType(mBean.getData().getOpreatType());
+        mBean_data.setOpreatType(mBean.getData().getOpreatType());//--操作类型 0：新增，1：更新
 
         if (canComit) {
             Intent intent = new Intent(this, CheckEndActivity.class);
@@ -245,7 +244,8 @@ public class CheckItemActivity extends CarBaseActivity {
             checkItemBean.setType(1);
             mMapList.add(checkItemBean);
         }
-        mImageBeans = new ArrayList<>();
+//        mImageBeans = new ArrayList<>();
+        mImageBeans = mBean.getData().getImages();
         mJudgeAdapter = new JudgeAdapter(this, mMapList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mCheckItemJudgeRecy.setLayoutManager(linearLayoutManager);

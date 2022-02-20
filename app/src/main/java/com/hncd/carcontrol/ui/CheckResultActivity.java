@@ -17,6 +17,8 @@ import com.hncd.carcontrol.bean.RegistInforBean;
 import com.hncd.carcontrol.utils.CarHttp;
 import com.hncd.carcontrol.utils.HttpBackListener;
 import com.hncd.carcontrol.utils.ItemRecyDecoration;
+import com.luck.picture.lib.bean.CheckItemPhotoBean;
+import com.luck.picture.lib.entity.LocalMedia;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.superc.yyfflibrary.utils.titlebar.TitleUtils;
 
@@ -49,7 +51,9 @@ public class CheckResultActivity extends CarBaseActivity {
     private CheckAdapter mCheckAdapter;
     private RegistInforBean mBean;
     private String check_item = "";
+    private String fanx_data = "";
     private String note = "";
+    private boolean data_ready = false;
 
     @Override
     public int getContentLayoutId() {
@@ -66,7 +70,6 @@ public class CheckResultActivity extends CarBaseActivity {
         String result_bean = extras.getString("bean");
         mBean = new Gson().fromJson(result_bean, RegistInforBean.class);
         initView();
-        getData();
     }
 
     @OnClick({R.id.check_back, R.id.check_result_start})
@@ -76,14 +79,17 @@ public class CheckResultActivity extends CarBaseActivity {
                 finish();
                 break;
             case R.id.check_result_start:
-                if(TextUtils.isEmpty(note)) {
-                    Intent intent = new Intent(this, CheckItemActivity.class);
-                    intent.putExtra("lsh",data_result);
-                    intent.putExtra("data", check_item);
-                    startActivity(intent);
-                    finish();
-                    EventBus.getDefault().post(new EventMessage("msg"));
-                }else{
+                if (TextUtils.isEmpty(note)) {
+                    if (data_ready) {
+                        Intent intent = new Intent(this, CheckItemActivity.class);
+                        intent.putExtra("lsh", data_result);
+                        intent.putExtra("data", check_item);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        ToastShow("数据正在准备中,稍后重试");
+                    }
+                } else {
                     ToastShow(note);
                 }
                 break;
@@ -101,12 +107,15 @@ public class CheckResultActivity extends CarBaseActivity {
         switch (auditStatus) {
             case 0:
                 mBt_start.setText("开始查验");
+                getData(false);
                 break;
             case 2:
                 mBt_start.setText("查验不合格");
+                getData(true);
                 break;
             case 3:
                 mBt_start.setText("审核失败");
+                getData(true);
                 break;
             case 1:
                 mBt_start.setText("审核中");
@@ -130,7 +139,7 @@ public class CheckResultActivity extends CarBaseActivity {
     }
 
     /*获取配置项目（查验项目、拍照项目、通道）*/
-    private void getData() {
+    private void getData(boolean more) {
         Map<String, Object> map = new HashMap<>();
         map.put("serialNumber", data_result);
         String result = new Gson().toJson(map);
@@ -142,6 +151,11 @@ public class CheckResultActivity extends CarBaseActivity {
                 BaseBean bean = new Gson().fromJson(result.toString(), BaseBean.class);
                 if (bean.getCode() == 200) {
                     check_item = result.toString();
+                    if (more) {
+                        getMore();
+                    } else {
+                        data_ready = true;
+                    }
                 } else {
                     ToastShow(bean.getMsg());
                 }
@@ -152,8 +166,126 @@ public class CheckResultActivity extends CarBaseActivity {
                 super.onErrorLIstener(error);
             }
         });
-
-
     }
+
+    /*反显数据获取   并整合数据*/
+    private void getMore() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("serialNumber", data_result);
+        String result = new Gson().toJson(map);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=UTF-8"), result);
+        CarHttp.getInstance().toGetData(CarHttp.getInstance().getApiService().getCheckInfo(requestBody), new HttpBackListener() {
+            @Override
+            public void onSuccessListener(Object result) {
+                super.onSuccessListener(result);
+                BaseBean bean = new Gson().fromJson(result.toString(), BaseBean.class);
+                if (bean.getCode() == 200) {
+                    fanx_data = result.toString();
+                    ZhengheData();
+                } else {
+                    ToastShow(bean.getMsg());
+                }
+            }
+
+            @Override
+            public void onErrorLIstener(String error) {
+                super.onErrorLIstener(error);
+            }
+        });
+    }
+
+    private void ZhengheData() {
+        CheckAllBean checkAllBean = new Gson().fromJson(check_item, CheckAllBean.class);//总数据
+        CheckAllBean check_again = new Gson().fromJson(fanx_data, CheckAllBean.class);//已上传数据
+        CheckAllBean.DataBean data_all = checkAllBean.getData();
+        CheckAllBean.DataBean data_again = check_again.getData();
+
+        checkAllBean.getData().setCheckApprove(check_again.getData().getCheckApprove());
+        checkAllBean.getData().setOpreatType("1");//--操作类型 0：新增，1：更新
+        /*--------------------------------------判定项目上方数据整合修改-start--------------------------------------*/
+        List<CheckAllBean.DataBean.CheckItemBean> checkItem_all = data_all.getCheckItem();
+        List<CheckAllBean.DataBean.CheckItemBean> checkItem_again = data_again.getCheckItem();
+        for (CheckAllBean.DataBean.CheckItemBean bean : checkItem_again) {
+            String itemCfgId = (String) bean.getItemCfgId();
+            for (int i = 0; i < checkItem_all.size(); i++) {
+                CheckAllBean.DataBean.CheckItemBean itemBean = checkItem_all.get(i);
+                if ((itemCfgId.equals(itemBean.getItemCfgId()))) {
+                    itemBean.setEdcCheckLogOutId(bean.getEdcCheckLogOutId());
+                    itemBean.setLsh(bean.getLsh());
+                    itemBean.setIsOkFlag(bean.getIsOkFlag());
+                    itemBean.setReason(bean.getReason());
+                    itemBean.setPhotoPath(bean.getPhotoPath());
+                    String photoPath = bean.getPhotoPath();
+                    if (!TextUtils.isEmpty(photoPath)) {
+                        List<LocalMedia> mpics = new ArrayList<>();
+                        String[] split = photoPath.split(",");
+                        for (int j = 0; j < split.length; j++) {
+                            LocalMedia localMedia = new LocalMedia();
+                            localMedia.setPath(split[j]);
+                            mpics.add(localMedia);
+                        }
+                        itemBean.setPicLists(mpics);
+                    }
+                    itemBean.setCreateTime(bean.getCreateTime());
+                }
+            }
+
+        }
+        /*--------------------------------------判定项目下方数据整合修改-改装-end--------------------------------------*/
+        List<CheckAllBean.DataBean.CheckItemBean> itemRefi_all = data_all.getCheckItemRefit();
+        List<CheckAllBean.DataBean.CheckItemBean> itemRefit_again = data_again.getCheckItemRefit();
+        for (CheckAllBean.DataBean.CheckItemBean bean : itemRefit_again) {
+            String itemCode =(String) bean.getItemCfgRefitId();
+            for (int i = 0; i < itemRefi_all.size(); i++) {
+                CheckAllBean.DataBean.CheckItemBean itemBean = itemRefi_all.get(i);
+                if (itemCode.equals(itemBean.getItemCfgId())) {
+                    itemBean.setEdcCheckLogOutRefitId(bean.getEdcCheckLogOutRefitId());
+                    itemBean.setLsh(bean.getLsh());
+                    itemBean.setIsOkFlag(bean.getIsOkFlag());
+                    itemBean.setReason(bean.getReason());
+                    itemBean.setPhotoPath(bean.getPhotoPath());
+                    String photoPath = bean.getPhotoPath();
+                    if (!TextUtils.isEmpty(photoPath)) {
+                        List<LocalMedia> mpics = new ArrayList<>();
+                        String[] split = photoPath.split(",");
+                        for (int j = 0; j < split.length; j++) {
+                            LocalMedia localMedia = new LocalMedia();
+                            localMedia.setPath(split[j]);
+                            mpics.add(localMedia);
+                        }
+                        itemBean.setPicLists(mpics);
+                    }
+                    itemBean.setCreateTime(bean.getCreateTime());
+                }
+            }
+
+        }
+        /*--------------------------------------检测图片项目集合-及图片集合--------------------------------------*/
+        List<LocalMedia> mImageBeans = new ArrayList<>();
+
+        for (int i = 0; i < data_again.getCheckItemPhoto().size(); i++) {
+            CheckItemPhotoBean checkItemPhotoBean = data_again.getCheckItemPhoto().get(i);
+            String itemCode = checkItemPhotoBean.getItemCfgPhotoId();
+            for (CheckItemPhotoBean bean : data_all.getCheckItemPhoto()) {
+                if (itemCode.equals(bean.getItemPotoCfgId())) {
+                    bean.setEdcCheckLogOutPhotoId(checkItemPhotoBean.getEdcCheckLogOutPhotoId());
+                    bean.setLsh(checkItemPhotoBean.getLsh());
+                    bean.setHasTake(true);
+                    bean.setImgPos(i);
+                    bean.setPhotoPath(checkItemPhotoBean.getPhotoPath());
+                    bean.setCreateTime(checkItemPhotoBean.getCreateTime());
+                }
+            }
+            LocalMedia localMedia = new LocalMedia();
+            localMedia.setPath(checkItemPhotoBean.getPhotoPath());
+            localMedia.setTitle(checkItemPhotoBean.getItemCode() + ":" + checkItemPhotoBean.getItemName());
+            localMedia.setCode(checkItemPhotoBean.getItemCode());
+            mImageBeans.add(localMedia);
+        }
+        checkAllBean.getData().setImages(mImageBeans);
+        check_item = new Gson().toJson(checkAllBean);
+        data_ready = true;
+    }
+
 
 }

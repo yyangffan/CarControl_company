@@ -1,6 +1,7 @@
 package com.hncd.carcontrol.ui;
 
 import android.content.Intent;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -17,6 +18,7 @@ import com.hncd.carcontrol.bean.CheckAllBean;
 import com.hncd.carcontrol.dig_pop.TongdPopWindow;
 import com.hncd.carcontrol.utils.CarHttp;
 import com.hncd.carcontrol.utils.HttpBackListener;
+import com.ljy.devring.DevRing;
 import com.luck.picture.lib.bean.CheckItemPhotoBean;
 import com.superc.yyfflibrary.utils.titlebar.TitleUtils;
 
@@ -69,8 +71,8 @@ public class CheckEndActivity extends CarBaseActivity {
     private CheckAllBean.DataBean mUpBean;
     private CheckAllBean.DataBean.CheckApprove mCheckApprove;
     private String td_id = "";
-    private Map<String,Object> map_up;
-    private Map<String,Object> map_aprove;
+    private Map<String, Object> map_up;
+    private Map<String, Object> map_aprove;
 
 
     @Override
@@ -125,19 +127,33 @@ public class CheckEndActivity extends CarBaseActivity {
         mCheckEndImg.setImageResource(mState ? R.drawable.check_success : R.drawable.check_failed);
         mCheckEndTvresult.setText(mState ? "查验合格" : "查验不合格");
         mCheckEndName.setText(mLoginBean.getData().getName());
-        mCheckEndCytype.setText("机动车（校车）");
+  /*      mCheckEndCytype.setText("机动车（校车）");
         mCheckEndYwtype.setText("补领登记证书");
-        mCheckEndHaopai.setText("大型汽车/你想象不到");
+        mCheckEndHaopai.setText("大型汽车/你想象不到");*/
         mCheckEndDate.setText(mnowDate);
-        map_up =  zhegnHdata();
+        if ("1".equals(mUpBean.getOpreatType())) {//如果是更新
+            CheckAllBean.DataBean.CheckApprove checkApprove = mUpBean.getCheckApprove();
+            mCheckEndRemarks.setText(checkApprove.getCheckRemark());
+            mCheckEndRbno.setChecked(checkApprove.getNewEnergyFlag().equals("1") ? true : false);
+            mCheckEndRbyes.setChecked(checkApprove.getNewEnergyFlag().equals("1") ? false : true);
+            td_id = checkApprove.getNvrLineId();
+            for (CheckAllBean.DataBean.CheckLineBean bean : mTongd) {
+                if(td_id.equals(bean.getId())){
+                    mCheckEndTd.setText(bean.getLineNo());
+                    break;
+                }
+            }
+
+        }
+        map_up = zhegnHdata();
     }
 
     private void toComit() {
-        map_aprove.put("checkRemark",mCheckEndRemarks.getText().toString());
-        map_aprove.put("checkStatus",mState ? "0" : "1");//查验状态 0：合格 1：不合格
-        map_aprove.put("nvrLineId",td_id);//通道id
-        map_aprove.put("newEnergyFlag",mCheckEndRbno.isChecked() ? "1" : "0");//是否新能源 0:是  1：否
-        map_up.put("checkApprove",map_aprove);
+        map_aprove.put("checkRemark", mCheckEndRemarks.getText().toString());
+        map_aprove.put("checkStatus", mState ? "0" : "1");//查验状态 0：合格 1：不合格
+        map_aprove.put("nvrLineId", td_id);//通道id
+        map_aprove.put("newEnergyFlag", mCheckEndRbno.isChecked() ? "1" : "0");//是否新能源 0:是  1：否
+        map_up.put("checkApprove", map_aprove);
 
         String result = new Gson().toJson(map_up);
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=UTF-8"), result);
@@ -146,6 +162,10 @@ public class CheckEndActivity extends CarBaseActivity {
             public void onSuccessListener(Object result) {
                 super.onSuccessListener(result);
                 BaseBean bean = new Gson().fromJson(result.toString(), BaseBean.class);
+                if (bean.getCode() == 200) {
+                    startActivity(new Intent(CheckEndActivity.this, MainActivity.class));
+                    DevRing.activityListManager().killAllExclude(MainActivity.class);
+                }
                 ToastShow(bean.getMsg());
             }
 
@@ -175,13 +195,13 @@ public class CheckEndActivity extends CarBaseActivity {
         CheckAllBean.DataBean.CheckApprove checkApprove = mUpBean.getCheckApprove();
         String checkDate = checkApprove.getCheckDate();
         String lsh = mCheckApprove.getLsh();
-        map_aprove.put("checkLogOutApproveId",checkApprove.getCheckLogOutApproveId());
-        map_aprove.put("lsh",lsh);
-        map_aprove.put("deptCode",checkApprove.getDeptCode());
-        map_aprove.put("checkNum",checkApprove.getCheckNum());
-        map_aprove.put("checkDate",checkApprove.getCheckDate());
-        map_aprove.put("checkPeople",checkApprove.getCheckPeople());
-        map_aprove.put("checkStartDate",checkApprove.getCheckStartDate());
+        map_aprove.put("checkLogOutApproveId", checkApprove.getCheckLogOutApproveId());
+        map_aprove.put("lsh", lsh);
+        map_aprove.put("deptCode", checkApprove.getDeptCode());
+        map_aprove.put("checkNum", checkApprove.getCheckNum());
+        map_aprove.put("checkDate", checkApprove.getCheckDate());
+        map_aprove.put("checkPeople", checkApprove.getCheckPeople());
+        map_aprove.put("checkStartDate", checkApprove.getCheckStartDate());
 
 
         Map<String, Object> map_result = new HashMap<>();
@@ -195,9 +215,9 @@ public class CheckEndActivity extends CarBaseActivity {
             map_item.put("lsh", lsh);
             map_item.put("itemCode", bean.getCheckItemCode());
             map_item.put("itemName", bean.getCheckItemName());
-            map_item.put("isOkFlag", bean.getIsOkFlag());
-            map_item.put("reason", bean.getReason());
-            map_item.put("photoPath", bean.getPhotoPath());
+            map_item.put("isOkFlag", bean.getIsOkFlag());//{"合格", "1"}, {"不合格", "3"}, {"未判定", "0"}
+            map_item.put("reason", bean.getIsOkFlag() == 3 ? bean.getReason() : "");
+            map_item.put("photoPath", bean.getIsOkFlag() == 3 ? bean.getPhotoPath() : "");
             map_item.put("itemCfgId", bean.getItemCfgId());
             map_item.put("createTime", checkDate);
             list_item.add(map_item);
@@ -212,29 +232,29 @@ public class CheckEndActivity extends CarBaseActivity {
             map_refit.put("lsh", lsh);
             map_refit.put("itemCode", bean.getCheckItemCode());
             map_refit.put("itemName", bean.getCheckItemName());
-            map_refit.put("isOkFlag", bean.getIsOkFlag());
-            map_refit.put("reason", bean.getReason());
-            map_refit.put("photoPath", bean.getPhotoPath());
-            map_refit.put("itemCfgRefitId", bean.getItemCfgRefitId());
+            map_refit.put("isOkFlag", bean.getIsOkFlag());//{"合格（未改装）", "1"}, {"合格（改装）", "2"}, {"不合格", "3"}, {"未判定", "0"}
+            map_refit.put("reason", bean.getIsOkFlag() == 3 ? bean.getReason() : "");
+            map_refit.put("photoPath", bean.getIsOkFlag() == 3 ? bean.getPhotoPath() : "");
+            map_refit.put("itemCfgRefitId", bean.getItemCfgId());
             map_refit.put("createTime", checkDate);
             list_refit.add(map_refit);
         }
         map_result.put("checkItemRefit", list_refit);
 
         List<CheckItemPhotoBean> checkItemPhoto = mUpBean.getCheckItemPhoto();//拍照项目
-        List<Map<String,Object>> list_photo = new ArrayList<>();
+        List<Map<String, Object>> list_photo = new ArrayList<>();
         for (CheckItemPhotoBean bean : checkItemPhoto) {
-            Map<String,Object> map_photo = new HashMap<>();
+            Map<String, Object> map_photo = new HashMap<>();
             map_photo.put("edcCheckLogOutPhotoId", bean.getEdcCheckLogOutPhotoId());
             map_photo.put("lsh", lsh);
             map_photo.put("itemCode", bean.getCheckItemCode());
             map_photo.put("itemName", bean.getCheckItemName());
             map_photo.put("photoPath", bean.getPhotoPath());
-            map_photo.put("itemCfgPhotoId", bean.getItemCfgPhotoId());
+            map_photo.put("itemCfgPhotoId", bean.getItemPotoCfgId());
             map_photo.put("createTime", bean.getCreateTime());
             list_photo.add(map_photo);
         }
-        map_result.put("checkItemPhoto",list_photo);
+        map_result.put("checkItemPhoto", list_photo);
 
         return map_result;
     }

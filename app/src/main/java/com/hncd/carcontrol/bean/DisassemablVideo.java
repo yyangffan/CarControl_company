@@ -15,17 +15,17 @@ public class DisassemablVideo extends BaseBean{
    }
 
    public static class DataBean {
-      private String lineId;
+      private String lineNo;
       private String id;
       private String status;
       private List<CheckAllBean.DataBean.CheckLineBean> nvrLine;
 
-      public String getLineId() {
-         return lineId;
+      public String getlineNo() {
+         return lineNo;
       }
 
-      public void setLineId(String lineId) {
-         this.lineId = lineId;
+      public void setlineNo(String lineNo) {
+         this.lineNo = lineNo;
       }
 
       public String getId() {

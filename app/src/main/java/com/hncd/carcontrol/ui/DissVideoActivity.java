@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hncd.carcontrol.R;
@@ -110,13 +111,13 @@ public class DissVideoActivity extends CarBaseActivity {
             case "1":
                 mDissVideoComit.setText("结束拆解");
 //                mDissVideoTd.setText(mTongd.get(0).getLineNo());//需要返回通道名称
-                lineId = bean.getData().getLineId();
+                mDissVideoTd.setText(bean.getData().getlineNo());
                 break;
             case "2":
                 mDissVideoComit.setText("拆解已结束");
 //                mDissVideoTd.setText(mTongd.get(0).getLineNo());//需要返回通道名称
-                lineId = bean.getData().getLineId();
                 mDissVideoComit.setBackgroundResource(R.drawable.bg_circle_graya);
+                mDissVideoTd.setText(bean.getData().getlineNo());
                 break;
 
 
@@ -139,8 +140,9 @@ public class DissVideoActivity extends CarBaseActivity {
                 if(bean.getCode() == 200){
                     mStatus = "1"; //修改成已开始拆解
                     mDissVideoComit.setText("结束拆解");
+                    getDisassemablVideo(data_result);
                 }
-                ToastShow(bean.getMsg());
+                Toast.makeText(DissVideoActivity.this, bean.getMsg(), Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -168,7 +170,7 @@ public class DissVideoActivity extends CarBaseActivity {
                     mDissVideoComit.setText("拆解已结束");
                     mDissVideoComit.setBackgroundResource(R.drawable.bg_circle_graya);
                 }
-                ToastShow(bean.getMsg());
+                Toast.makeText(DissVideoActivity.this, bean.getMsg(), Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -179,6 +181,30 @@ public class DissVideoActivity extends CarBaseActivity {
 
 
     }
+
+
+    private void getDisassemablVideo(String code){
+        Map<String, Object> map = new HashMap<>();
+        map.put("deptId", mLoginBean.getData().getDeptId());
+        map.put("serialNumber", code);
+        String result = new Gson().toJson(map);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=UTF-8"), result);
+        CarHttp.getInstance().toGetData(CarHttp.getInstance().getApiService().getDisassemablVideo(requestBody), new HttpBackListener() {
+            @Override
+            public void onSuccessListener(Object result) {
+                super.onSuccessListener(result);
+                bean = new Gson().fromJson(result.toString(), DisassemablVideo.class);
+            }
+
+            @Override
+            public void onErrorLIstener(String error) {
+                super.onErrorLIstener(error);
+            }
+        });
+
+
+    }
+
 
 
     private void initTdPop() {

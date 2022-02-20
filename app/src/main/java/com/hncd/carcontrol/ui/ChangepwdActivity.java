@@ -87,6 +87,9 @@ public class ChangepwdActivity extends CarBaseActivity {
             public void onSuccessListener(Object result) {
                 super.onSuccessListener(result);
                 BaseBean bean = new Gson().fromJson(result.toString(), BaseBean.class);
+                if(bean.getCode() == 200){
+                    finish();
+                }
                 ToastShow(bean.getMsg());
             }
 

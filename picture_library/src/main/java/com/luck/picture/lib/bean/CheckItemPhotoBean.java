@@ -12,6 +12,7 @@ public class CheckItemPhotoBean implements Parcelable {
     private boolean hasTake;
     private int imgPos;
     private String itemCfgId;
+    private String lsh;
     private String businessTypeCode;
     private String carTypeCode;
     private String countryInOutCode;
@@ -23,8 +24,11 @@ public class CheckItemPhotoBean implements Parcelable {
     private String defVal;
     private String orderName;
     private String edcCheckLogOutPhotoId;
-    private String itemCfgPhotoId;
+    private String itemPotoCfgId;//查询返回
+    private String itemCfgPhotoId;//反显返回
     private String createTime;
+    private String itemCode;
+    private String itemName;
 
     public String getEdcCheckLogOutPhotoId() {
         return edcCheckLogOutPhotoId;
@@ -34,12 +38,36 @@ public class CheckItemPhotoBean implements Parcelable {
         this.edcCheckLogOutPhotoId = edcCheckLogOutPhotoId;
     }
 
+    public String getItemCode() {
+        return itemCode;
+    }
+
+    public void setItemCode(String itemCode) {
+        this.itemCode = itemCode;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
     public String getCreateTime() {
         return createTime;
     }
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
+    }
+
+    public String getItemPotoCfgId() {
+        return itemPotoCfgId;
+    }
+
+    public void setItemPotoCfgId(String itemPotoCfgId) {
+        this.itemPotoCfgId = itemPotoCfgId;
     }
 
     public String getItemCfgPhotoId() {
@@ -183,6 +211,14 @@ public class CheckItemPhotoBean implements Parcelable {
         return 0;
     }
 
+    public String getLsh() {
+        return lsh;
+    }
+
+    public void setLsh(String lsh) {
+        this.lsh = lsh;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.checkItemCode);
@@ -191,6 +227,7 @@ public class CheckItemPhotoBean implements Parcelable {
         dest.writeByte(this.hasTake ? (byte) 1 : (byte) 0);
         dest.writeInt(this.imgPos);
         dest.writeString(this.itemCfgId);
+        dest.writeString(this.lsh);
         dest.writeString(this.businessTypeCode);
         dest.writeString(this.carTypeCode);
         dest.writeString(this.countryInOutCode);
@@ -203,7 +240,9 @@ public class CheckItemPhotoBean implements Parcelable {
         dest.writeString(this.orderName);
         dest.writeString(this.edcCheckLogOutPhotoId);
         dest.writeString(this.createTime);
-        dest.writeString(this.itemCfgPhotoId);
+        dest.writeString(this.itemCode);
+        dest.writeString(this.itemName);
+        dest.writeString(this.itemPotoCfgId);
     }
 
     public void readFromParcel(Parcel source) {
@@ -213,6 +252,7 @@ public class CheckItemPhotoBean implements Parcelable {
         this.hasTake = source.readByte() != 0;
         this.imgPos = source.readInt();
         this.itemCfgId = source.readString();
+        this.lsh = source.readString();
         this.businessTypeCode = source.readString();
         this.carTypeCode = source.readString();
         this.countryInOutCode = source.readString();
@@ -225,7 +265,9 @@ public class CheckItemPhotoBean implements Parcelable {
         this.orderName = source.readString();
         this.edcCheckLogOutPhotoId = source.readString();
         this.createTime = source.readString();
-        this.itemCfgPhotoId = source.readString();
+        this.itemCode = source.readString();
+        this.itemName = source.readString();
+        this.itemPotoCfgId = source.readString();
     }
 
     public CheckItemPhotoBean() {
@@ -238,6 +280,7 @@ public class CheckItemPhotoBean implements Parcelable {
         this.hasTake = in.readByte() != 0;
         this.imgPos = in.readInt();
         this.itemCfgId = in.readString();
+        this.lsh = in.readString();
         this.businessTypeCode = in.readString();
         this.carTypeCode = in.readString();
         this.countryInOutCode = in.readString();
@@ -250,7 +293,9 @@ public class CheckItemPhotoBean implements Parcelable {
         this.orderName = in.readString();
         this.edcCheckLogOutPhotoId = in.readString();
         this.createTime = in.readString();
-        this.itemCfgPhotoId = in.readString();
+        this.itemCode = in.readString();
+        this.itemName = in.readString();
+        this.itemPotoCfgId = in.readString();
     }
 
     public static final Parcelable.Creator<CheckItemPhotoBean> CREATOR = new Parcelable.Creator<CheckItemPhotoBean>() {
