@@ -83,7 +83,8 @@ public class CarApplication extends Application implements CameraXConfig.Provide
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getEventMsgt(EventMessage msg) {
         if (msg.getMessage().equals("msg")) {
-            note_msg = "来新消息了" + new Random().nextInt(100);
+            note_msg= msg.getContent();
+//            note_msg = "来新消息了" + new Random().nextInt(100);
             showJxqDig();
         }
     }
@@ -126,6 +127,7 @@ public class CarApplication extends Application implements CameraXConfig.Provide
 
         @Override
         public void onActivityResumed(@NonNull Activity activity) {
+            mActivity =activity;
 
         }
 
@@ -148,9 +150,10 @@ public class CarApplication extends Application implements CameraXConfig.Provide
         public void onActivityDestroyed(@NonNull Activity activity) {
 
         }
+        
     }
 
-    private CountDownTimer countDownTimer = new CountDownTimer(10 * 1000, 1 * 1000) {
+    private CountDownTimer countDownTimer = new CountDownTimer(5 * 1000, 1 * 1000) {
         @Override
         public void onTick(long millisUntilFinished) {
             try {

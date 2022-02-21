@@ -9,6 +9,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.hncd.carcontrol.R;
 import com.hncd.carcontrol.base.CarBaseActivity;
+import com.hncd.carcontrol.bean.EventMessage;
 import com.hncd.carcontrol.bean.LoginBean;
 import com.hncd.carcontrol.bean.MessageNoBean;
 import com.hncd.carcontrol.dig_pop.LogoutDialog;
@@ -18,6 +19,10 @@ import com.hncd.carcontrol.utils.HttpBackListener;
 import com.hncd.carcontrol.views.CircleImageView;
 import com.ljy.devring.DevRing;
 import com.superc.yyfflibrary.utils.titlebar.TitleUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -89,6 +94,7 @@ public class PersonalCenterActivity extends CarBaseActivity {
         CarShareUtil.getInstance().clear();
         startActivity(new Intent(this, LoginActivity.class));
         DevRing.activityListManager().killAllExclude(LoginActivity.class);
+        EventBus.getDefault().post(new EventMessage("diss"));
     }
 
     @Override
@@ -96,6 +102,13 @@ public class PersonalCenterActivity extends CarBaseActivity {
         super.onRestart();
         getMsgNum();
 
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getEventMsgt(EventMessage msg) {
+        if (msg.getMessage().equals("msg")) {
+            getMsgNum();
+        }
     }
 
     /*获取未读消息数量*/

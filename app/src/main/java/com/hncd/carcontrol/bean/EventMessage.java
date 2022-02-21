@@ -4,6 +4,7 @@ public class EventMessage {
     public static final int PAY_SUCCESS =513;
     public static final int ATTEN_SUCCESS =98513;
     private String message ="";
+    private String content = "";
     private int code;
 
     private String openid = "";
@@ -39,6 +40,14 @@ public class EventMessage {
 
     public void setCode(int code) {
         this.code = code;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public EventMessage() {
