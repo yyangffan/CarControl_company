@@ -10,6 +10,7 @@ import android.view.View;
 import com.google.gson.Gson;
 import com.hncd.carcontrol.bean.EventMessage;
 import com.hncd.carcontrol.bean.LoginBean;
+import com.hncd.carcontrol.dig_pop.LoadDialog;
 import com.hncd.carcontrol.dig_pop.NoteDialog;
 import com.hncd.carcontrol.utils.CarShareUtil;
 import com.ljy.devring.DevRing;
@@ -26,9 +27,11 @@ public abstract class CarBaseActivity extends BaseActivity {
     public String mUser_name = "", mUser_id = "";
     public LoginBean mLoginBean;
     private NoteDialog mMNoteDialog;  //提示弹窗
+    public LoadDialog mLoadDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        mLoadDialog = new LoadDialog(this);
         String user_Info = (String) CarShareUtil.getInstance().get(CarShareUtil.APP_USERINFO, "");
         if (!TextUtils.isEmpty(user_Info)) {
             mLoginBean = new Gson().fromJson(user_Info, LoginBean.class);
@@ -52,6 +55,15 @@ public abstract class CarBaseActivity extends BaseActivity {
         EventBus.getDefault().unregister(this);
     }
 
+    public void showLoad() {
+        if (mLoadDialog != null && !mLoadDialog.isShowing())
+            mLoadDialog.show();
+    }
+
+    public void hideLoad() {
+        if (mLoadDialog != null)
+            mLoadDialog.dismiss();
+    }
 
 
 }

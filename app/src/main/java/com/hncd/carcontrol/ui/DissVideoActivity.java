@@ -131,13 +131,15 @@ public class DissVideoActivity extends CarBaseActivity {
         map.put("serialNumber", data_result);
         map.put("lineId", lineId);
         String result = new Gson().toJson(map);
+        showLoad();
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=UTF-8"), result);
         CarHttp.getInstance().toGetData(CarHttp.getInstance().getApiService().startDisassmblVideo(requestBody), new HttpBackListener() {
             @Override
             public void onSuccessListener(Object result) {
                 super.onSuccessListener(result);
+                hideLoad();
                 BaseBean bean = new Gson().fromJson(result.toString(), BaseBean.class);
-                if(bean.getCode() == 200){
+                if (bean.getCode() == 200) {
                     mStatus = "1"; //修改成已开始拆解
                     mDissVideoComit.setText("结束拆解");
                     getDisassemablVideo(data_result);
@@ -148,6 +150,7 @@ public class DissVideoActivity extends CarBaseActivity {
             @Override
             public void onErrorLIstener(String error) {
                 super.onErrorLIstener(error);
+                hideLoad();
             }
         });
 
@@ -158,14 +161,15 @@ public class DissVideoActivity extends CarBaseActivity {
     private void endDisassmblVideo() {
         Map<String, Object> map = new HashMap<>();
         map.put("id", bean.getData().getId());
+        showLoad();
         String result = new Gson().toJson(map);
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=UTF-8"), result);
         CarHttp.getInstance().toGetData(CarHttp.getInstance().getApiService().endDisassmblVideo(requestBody), new HttpBackListener() {
             @Override
             public void onSuccessListener(Object result) {
-                super.onSuccessListener(result);
+                super.onSuccessListener(result);hideLoad();
                 BaseBean bean = new Gson().fromJson(result.toString(), BaseBean.class);
-                if(bean.getCode() == 200){
+                if (bean.getCode() == 200) {
                     mStatus = "2"; //修改成拆解已结束
                     mDissVideoComit.setText("拆解已结束");
                     mDissVideoComit.setBackgroundResource(R.drawable.bg_circle_graya);
@@ -175,7 +179,7 @@ public class DissVideoActivity extends CarBaseActivity {
 
             @Override
             public void onErrorLIstener(String error) {
-                super.onErrorLIstener(error);
+                super.onErrorLIstener(error);hideLoad();
             }
         });
 
@@ -183,7 +187,7 @@ public class DissVideoActivity extends CarBaseActivity {
     }
 
 
-    private void getDisassemablVideo(String code){
+    private void getDisassemablVideo(String code) {
         Map<String, Object> map = new HashMap<>();
         map.put("deptId", mLoginBean.getData().getDeptId());
         map.put("serialNumber", code);
@@ -206,12 +210,11 @@ public class DissVideoActivity extends CarBaseActivity {
     }
 
 
-
     private void initTdPop() {
         mTongdPopWindow = new TongdPopWindow(this, mTongd, mDissVideoTd.getText().toString(), mCheckEndLL.getWidth(), LinearLayout.LayoutParams.WRAP_CONTENT);
         mTongdPopWindow.setOnAdapterClickListener(new TongdPopWindow.OnAdapterClickListener() {
             @Override
-            public void onAdapterListener(String name,String id) {
+            public void onAdapterListener(String name, String id) {
                 mDissVideoTd.setText(name);
             }
         });

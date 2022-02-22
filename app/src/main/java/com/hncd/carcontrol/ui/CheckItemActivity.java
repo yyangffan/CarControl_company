@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.hncd.carcontrol.R;
@@ -328,6 +329,8 @@ public class CheckItemActivity extends CarBaseActivity {
                 .imageEngine(GlideEngine.createGlideEngine())
                 .isUseCustomCamera(true)
                 .setSingleBack(true)
+                .isCompress(true)//是否压缩
+                .compressQuality(60)//图片压缩后输出质量 0~ 100
                 .setButtonFeatures(CustomCameraType.BUTTON_STATE_ONLY_CAPTURE)
                 .forResult(new OnResultCallbackListener<LocalMedia>() {
                     @Override
@@ -365,6 +368,8 @@ public class CheckItemActivity extends CarBaseActivity {
                 .setLocalMedias(mImageBeans)
                 .setPhotoLists(mCheckItemPhotoLists)
                 .setSingleBack(false)
+                .isCompress(true)//是否压缩
+                .compressQuality(60)//图片压缩后输出质量 0~ 100
                 .setButtonFeatures(CustomCameraType.BUTTON_STATE_ONLY_CAPTURE)
                 .forResult(new OnResultCallbackListener<LocalMedia>() {
                     @Override
@@ -404,7 +409,7 @@ public class CheckItemActivity extends CarBaseActivity {
     }
 
     private void upLoadImage(int type, LocalMedia localMedia, int pos) {
-        String path = localMedia.getRealPath();
+        String path = localMedia.getCompressPath();
         if (TextUtils.isEmpty(path)) {
             path = localMedia.getPath();
         }
@@ -438,7 +443,6 @@ public class CheckItemActivity extends CarBaseActivity {
                     }
 
                 }
-
             }
 
             @Override

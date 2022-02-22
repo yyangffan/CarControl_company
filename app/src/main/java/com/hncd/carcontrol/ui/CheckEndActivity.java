@@ -154,13 +154,14 @@ public class CheckEndActivity extends CarBaseActivity {
         map_aprove.put("nvrLineId", td_id);//通道id
         map_aprove.put("newEnergyFlag", mCheckEndRbno.isChecked() ? "1" : "0");//是否新能源 0:是  1：否
         map_up.put("checkApprove", map_aprove);
-
+        showLoad();
         String result = new Gson().toJson(map_up);
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=UTF-8"), result);
         CarHttp.getInstance().toGetData(CarHttp.getInstance().getApiService().saveInfo(requestBody), new HttpBackListener() {
             @Override
             public void onSuccessListener(Object result) {
                 super.onSuccessListener(result);
+                hideLoad();
                 BaseBean bean = new Gson().fromJson(result.toString(), BaseBean.class);
                 if (bean.getCode() == 200) {
                     startActivity(new Intent(CheckEndActivity.this, MainActivity.class));
@@ -172,6 +173,7 @@ public class CheckEndActivity extends CarBaseActivity {
             @Override
             public void onErrorLIstener(String error) {
                 super.onErrorLIstener(error);
+                hideLoad();
             }
         });
 
