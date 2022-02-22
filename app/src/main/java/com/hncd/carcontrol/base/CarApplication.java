@@ -58,7 +58,7 @@ public class CarApplication extends Application implements CameraXConfig.Provide
         } catch (IOException e) {
             Log.e(TAG, "init: " + e.toString());
         }
-//        DevRing.init(this);
+        DevRing.init(this);
         DevRing.configureHttp().setBaseUrl(Constant.BASE_URL).setIsUseCookie(true).setConnectTimeout(60).setIsUseLog(Constant.IS_DEBUG);
         DevRing.configureOther().setIsUseCrashDiary(true);
         DevRing.configureImage();
