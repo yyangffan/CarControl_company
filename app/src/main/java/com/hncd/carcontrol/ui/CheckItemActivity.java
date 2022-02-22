@@ -336,7 +336,7 @@ public class CheckItemActivity extends CarBaseActivity {
                         Log.e(TAG, "onResult: " + result.get(0).getPath());
                         picLists.add(result.get(0));
                         mJudgeAdapter.notifyItemChanged(pos);
-                        upLoadImage(0, result.get(0).getPath(), pos);
+                        upLoadImage(0, result.get(0), pos);
                     }
 
                     @Override
@@ -395,7 +395,7 @@ public class CheckItemActivity extends CarBaseActivity {
                         bean.setHasTake(true);
                         bean.setImgPos(nowImgpos);
                         onActiBackListener.onActiBackListener("上传成功：" + images.get(0).getPath());
-                        upLoadImage(1, images.get(0).getPath(), pos);
+                        upLoadImage(1, images.get(0), pos);
 //                        convertBitmap(BitmapFactory.decodeFile(pic_path), pic_path);
 //                        throwGlideGetBit(BitmapFactory.decodeFile(pic_path),pic_path);
                     }
@@ -403,7 +403,11 @@ public class CheckItemActivity extends CarBaseActivity {
 
     }
 
-    private void upLoadImage(int type, String path, int pos) {
+    private void upLoadImage(int type, LocalMedia localMedia, int pos) {
+        String path = localMedia.getRealPath();
+        if (TextUtils.isEmpty(path)) {
+            path = localMedia.getPath();
+        }
         File img = new File(path);
         String names = img.getName();
         RequestBody requestFile = RequestBody.create(MediaType.parse(guessMimeType(img.getPath())), img);
