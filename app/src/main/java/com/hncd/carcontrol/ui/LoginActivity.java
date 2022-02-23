@@ -2,6 +2,7 @@ package com.hncd.carcontrol.ui;
 
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.google.gson.Gson;
@@ -32,6 +33,8 @@ public class LoginActivity extends CarBaseActivity {
     EditText mLoginSfzcode;
     @BindView(R.id.login_pwd)
     EditText mLoginPwd;
+    @BindView(R.id.login_cb)
+    CheckBox mLoginCb;
     private String mApp_url;
 
     @Override
@@ -47,6 +50,13 @@ public class LoginActivity extends CarBaseActivity {
         if (!TextUtils.isEmpty(mUser_name)) {
             statActivity(MainActivity.class);
             finish();
+        }
+        String cb_name = (String) CarShareUtil.getInstance().get(CarShareUtil.CB_NAME, "");
+        if (!TextUtils.isEmpty(cb_name)) {
+            String cb_pwd = (String) CarShareUtil.getInstance().get(CarShareUtil.CB_PWD, "");
+            mLoginSfzcode.setText(cb_name);
+            mLoginPwd.setText(cb_pwd);
+            mLoginCb.setChecked(true);
         }
         if (!NotificationsUtils.isNotificationEnabled(this)) {
             NotificationsUtils.toConfigMsg(this);
@@ -92,9 +102,16 @@ public class LoginActivity extends CarBaseActivity {
                 super.onSuccessListener(result);
                 LoginBean bean = new Gson().fromJson(result.toString(), LoginBean.class);
                 if (bean.getCode() == 200) {
-                    CarShareUtil.getInstance().put(CarShareUtil.APP_USERINFO,result.toString());
+                    CarShareUtil.getInstance().put(CarShareUtil.APP_USERINFO, result.toString());
                     CarShareUtil.getInstance().put(CarShareUtil.APP_USERNAME, sfz);
                     CarShareUtil.getInstance().put(CarShareUtil.APP_USERID, bean.getData().getUserIdX());
+                    if (mLoginCb.isChecked()) {
+                        CarShareUtil.getInstance().put(CarShareUtil.CB_NAME, sfz);
+                        CarShareUtil.getInstance().put(CarShareUtil.CB_PWD, pwd);
+                    }else{
+                        CarShareUtil.getInstance().remove(CarShareUtil.CB_NAME);
+                        CarShareUtil.getInstance().remove(CarShareUtil.CB_PWD);
+                    }
                     statActivity(MainActivity.class);
                     finish();
                 } else {

@@ -15,11 +15,13 @@ public class CarShareUtil {
 
     private static CarShareUtil mShareUtil;
     private static Context mContext;
-    public static final String APP_AGREE = "app_agree";//是否同意了用户协议
-    public static final String APP_BASEURL ="APPBASEURL";//项目的服务器地址
+    public static final String APP_AGREE = "app_agree";     //是否同意了用户协议
+    public static final String APP_BASEURL ="APPBASEURL";   //项目的服务器地址
     public static final String APP_USERINFO = "APPUSERINFO";//存储LoginBean
-    public static final String APP_USERID = "APPUSERID";//接口访问的唯一标识
+    public static final String APP_USERID = "APPUSERID";    //接口访问的唯一标识
     public static final String APP_USERNAME = "APPUSERNAME";//userName
+    public static final String CB_NAME ="CB_NAME";          //登录保存用户名
+    public static final String CB_PWD = "CB_PWD";           //登录保存密码
 
     private CarShareUtil() {
     }
@@ -100,14 +102,25 @@ public class CarShareUtil {
      */
     public void clear() {
         SharedPreferences sp = mContext.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
+
         String app_url = (String)get(APP_BASEURL,"");
+        String cb_name = (String)get(CB_NAME,"");
+        String cb_pwd = (String)get(CB_PWD,"");
+
+
         SharedPreferences.Editor editor = sp.edit();
         editor.clear();
         SharedPreferencesCompat.apply(editor);
+
         if(!TextUtils.isEmpty(app_url)){
             put(APP_BASEURL,app_url);
         }
+        if(!TextUtils.isEmpty(cb_name)){
+            put(CB_NAME,cb_name);
+            put(CB_PWD,cb_pwd);
+        }
     }
+
 
     /**
      * 创建一个解决SharedPreferencesCompat.apply方法的一个兼容类

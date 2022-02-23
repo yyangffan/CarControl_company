@@ -2,10 +2,12 @@ package com.hncd.carcontrol.base;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.hncd.carcontrol.bean.BaseBean;
 
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
@@ -28,7 +30,7 @@ public interface ApiService {
      * @return
      */
     @POST("cancellation/connectionTest")
-    Observable<JSONObject> connectionTest();
+    Call<JSONObject> connectionTest();
 
     /**
      * 修改密码

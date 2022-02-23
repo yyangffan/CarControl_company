@@ -97,6 +97,8 @@
         android:ellipsize="end"
         android:hint="请输入端口"
         android:text="8912"
+        android:inputType="number"
+        android:maxLength="4"
         android:lines="1"
         android:padding="@dimen/dp_8"
         android:textColor="@color/black"
