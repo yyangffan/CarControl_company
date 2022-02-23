@@ -11,10 +11,10 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- 适配Android R包可见性 开始 -->
     <queries package="com.hncd.carcontrol">
         <intent>
-            <action android:name="android.media.action.IMAGE_CAPTURE"></action>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
         </intent>
         <intent>
-            <action android:name="android.media.action.ACTION_VIDEO_CAPTURE"></action>
+            <action android:name="android.media.action.ACTION_VIDEO_CAPTURE" />
         </intent>
     </queries>
 
@@ -33,6 +33,9 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute,LockedOrientationActivity"
         tools:replace="android:allowBackup,andrpod:label">
+        <activity
+            android:name=".ui.DissStartActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.DissVideoActivity"
             android:exported="false" />
