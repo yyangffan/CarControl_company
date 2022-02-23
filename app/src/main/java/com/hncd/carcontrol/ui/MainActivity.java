@@ -45,7 +45,7 @@ public class MainActivity extends CarBaseActivity {
     RecyclerView mMainRecy;
     @BindView(R.id.main_smart)
     SmartRefreshLayout mSmart;
-    private String[][] mMain_strs = new String[][]{{"注销查验", "0"}, {"拆解视频", "1"}, {"个人中心", "2"}};
+    private String[][] mMain_strs = new String[][]{{"注销查验", "0"}, {"车辆拆解", "1"}, {"个人中心", "2"}};
     private MainRecyAdapter mMainRecyAdapter;
     private final int REQUEST_CODE_SCAN = 110;
     private final int REQUEST_CODE_VIDEO= 111;

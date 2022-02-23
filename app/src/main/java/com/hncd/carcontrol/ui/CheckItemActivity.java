@@ -13,9 +13,11 @@ import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.hncd.carcontrol.R;
 import com.hncd.carcontrol.adapter.ImagePhotoAdapter;
@@ -84,6 +86,8 @@ public class CheckItemActivity extends CarBaseActivity {
     SmartRefreshLayout mSmart;
     @BindView(R.id.checki_item_judge)
     View mCheckItemJudge;
+    @BindView(R.id.check_judge_imgv)
+    ImageView mCheckItemImgv;
     @BindView(R.id.checki_item_photo)
     View mCheckItemPhoto;
     @BindView(R.id.check_judge_recy)
@@ -174,7 +178,7 @@ public class CheckItemActivity extends CarBaseActivity {
 
     /*不合格的需要填写原因*/
     private void toGonext() {
-        CheckAllBean.DataBean mBean_data =new CheckAllBean.DataBean();
+        CheckAllBean.DataBean mBean_data = new CheckAllBean.DataBean();
         boolean canComit = true, isHege = true;
         for (int i = 0; i < mMapList.size(); i++) {
             CheckAllBean.DataBean.CheckItemBean checkItemBean = mMapList.get(i);
@@ -202,7 +206,7 @@ public class CheckItemActivity extends CarBaseActivity {
             }
 
         }
-        if(mImageBeans.size() == 0){
+        if (mImageBeans.size() == 0) {
             ToastShow("请对拍照项目拍照");
             return;
         }
@@ -210,7 +214,7 @@ public class CheckItemActivity extends CarBaseActivity {
         List<CheckItemPhotoBean> photoLists = new ArrayList<>();//检测图片的存储集合
         for (int i = 0; i < mBean.getData().getCheckItemPhoto().size(); i++) {
             CheckItemPhotoBean checkItemPhotoBean = mBean.getData().getCheckItemPhoto().get(i);
-            if(!TextUtils.isEmpty(checkItemPhotoBean.getPhotoPath())){
+            if (!TextUtils.isEmpty(checkItemPhotoBean.getPhotoPath())) {
                 photoLists.add(checkItemPhotoBean);
             }
         }
@@ -223,7 +227,7 @@ public class CheckItemActivity extends CarBaseActivity {
         if (canComit) {
             Intent intent = new Intent(this, CheckEndActivity.class);
             intent.putExtra("data", new Gson().toJson(mBean));//通道使用
-            intent.putExtra("updata",new Gson().toJson(mBean_data));//上传使用
+            intent.putExtra("updata", new Gson().toJson(mBean_data));//上传使用
             intent.putExtra("state", isHege);
             startActivity(intent);
         } else {
@@ -238,6 +242,7 @@ public class CheckItemActivity extends CarBaseActivity {
     private void initViews() {
         initPop();
         initBtDig();
+        Glide.with(this).load("https://t7.baidu.com/it/u=3332251293,4211134448&fm=193&f=GIF").into(mCheckItemImgv);
         mMapList = new ArrayList<>();
         mMapList.addAll(mBean.getData().getCheckItem());
         for (int i = 0; i < mBean.getData().getCheckItemRefit().size(); i++) {
@@ -432,7 +437,7 @@ public class CheckItemActivity extends CarBaseActivity {
                     if (type == 0) {//判定项目中的图片上传--内部的图片集合如何处理需要搞一下，不要上传到服务器
                         CheckAllBean.DataBean.CheckItemBean itemBean = mMapList.get(pos);
                         String photoPath = itemBean.getPhotoPath();
-                        photoPath = TextUtils.isEmpty(photoPath) ? result_url :photoPath + "," + result_url;
+                        photoPath = TextUtils.isEmpty(photoPath) ? result_url : photoPath + "," + result_url;
                         itemBean.setPhotoPath(photoPath);
                     } else {//检测图片的上传
 //                        mImageBeans.get(pos).setImgUrl(result_url);

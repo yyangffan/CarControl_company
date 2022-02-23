@@ -47,6 +47,7 @@
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable/bg_login_bt.xml" value="0.3194444444444444" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable/bg_login_noso.xml" value="0.390625" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable/bg_main.xml" value="0.390625" />
+        <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable/bg_stroke_gray.xml" value="0.390625" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable/bg_yel.xml" value="0.390625" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable/ic_launcher_background.xml" value="0.390625" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable/logn_cb.xml" value="0.33229166666666665" />
@@ -58,6 +59,7 @@
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/layout/activity_login.xml" value="0.33" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/layout/activity_main.xml" value="0.37447916666666664" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/layout/activity_personal_center.xml" value="0.33" />
+        <entry key="..\:/mine_work/CarControl-master/app/src/main/res/layout/check_item_judge.xml" value="0.438953488372093" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/layout/dialog_loading.xml" value="0.37447916666666664" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/layout/dialog_note.xml" value="0.34198331788693237" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/layout/dig_bt_select.xml" value="0.1" />
@@ -68,6 +70,7 @@
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.390625" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.390625" />
         <entry key="..\:/mine_work/CarControl-master/picture_library/src/main/res/drawable/bg_solder_red.xml" value="0.390625" />
+        <entry key="..\:/mine_work/CarControl-master/picture_library/src/main/res/drawable/bg_stro_gray.xml" value="0.390625" />
         <entry key="..\:/mine_work/CarControl-master/picture_library/src/main/res/drawable/bg_stro_white.xml" value="0.390625" />
         <entry key="..\:/mine_work/CarControl-master/picture_library/src/main/res/layout/activity_pic_priew.xml" value="0.37447916666666664" />
         <entry key="..\:/mine_work/CarControl-master/picture_library/src/main/res/layout/dig_photo_proj.xml" value="0.37447916666666664" />
