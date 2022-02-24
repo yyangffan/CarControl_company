@@ -18,6 +18,7 @@ import com.hncd.carcontrol.bean.BaseBean;
 import com.hncd.carcontrol.bean.CheckAllBean;
 import com.hncd.carcontrol.bean.EventMessage;
 import com.hncd.carcontrol.bean.RegistInforBean;
+import com.hncd.carcontrol.dig_pop.Digshow;
 import com.hncd.carcontrol.utils.CarHttp;
 import com.hncd.carcontrol.utils.GlideEngine;
 import com.hncd.carcontrol.utils.HttpBackListener;
@@ -63,6 +64,7 @@ public class CheckResultActivity extends CarBaseActivity {
     private String note = "";
     private boolean data_ready = false;
     private String license_photo = "";
+    private String pic_start = "data:image/jpg;base64,";
 
     @Override
     public int getContentLayoutId() {
@@ -81,7 +83,7 @@ public class CheckResultActivity extends CarBaseActivity {
         initView();
     }
 
-    @OnClick({R.id.check_back, R.id.check_result_start,R.id.check_result_imgv})
+    @OnClick({R.id.check_back, R.id.check_result_start, R.id.check_result_imgv})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.check_back:
@@ -103,11 +105,11 @@ public class CheckResultActivity extends CarBaseActivity {
                 }
                 break;
             case R.id.check_result_imgv:
-              /*  List<LocalMedia> sho_lo = new ArrayList<>();
-                LocalMedia localMedia = new LocalMedia();
-                localMedia.setPath(license_photo);
-                sho_lo.add(localMedia);
-                shwoLook(sho_lo,0);*/
+                if(license_photo.equals(pic_start)||TextUtils.isEmpty(license_photo)){
+                    ToastShow("图片加载中...");
+                }else {
+                    new Digshow(this, license_photo).show();
+                }
                 break;
         }
     }
@@ -119,15 +121,6 @@ public class CheckResultActivity extends CarBaseActivity {
         mSmart.setEnableOverScrollBounce(true);//是否启用越界回弹
 
         RegistInforBean.DataBean data = mBean.getData();
-
-//        try {
-            license_photo = "data:image/jpg;base64,"+data.getDrivingLicenseImg();
-            RequestOptions options = new RequestOptions().placeholder(R.drawable.default_pic).error(R.drawable.default_pic);
-            Glide.with(this).load(license_photo).apply(options).into(mImgvResult);
-//        } catch (Exception e) {
-//            ToastShow("解析异常："+e.toString());
-//        }
-
 
         Integer auditStatus = data.getAuditStatus();//3可查验  4审核中 5查验完成
         switch (auditStatus) {
@@ -161,8 +154,44 @@ public class CheckResultActivity extends CarBaseActivity {
         mCheckResultRecy.addItemDecoration(new ItemRecyDecoration(this, LinearLayoutManager.VERTICAL));
         mCheckResultRecy.setAdapter(mCheckAdapter);
 
+        getItemInfo();
 
     }
+
+    /*开始查验*/
+    private void getItemInfo() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("userName", mUser_name);
+        map.put("serialNumber", data_result);
+        String result = new Gson().toJson(map);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=UTF-8"), result);
+        CarHttp.getInstance().toGetData(CarHttp.getInstance().getApiService().getRegInfo(requestBody), new HttpBackListener() {
+            @Override
+            public void onSuccessListener(Object result) {
+                super.onSuccessListener(result);
+                RegistInforBean bean = new Gson().fromJson(result.toString(), RegistInforBean.class);
+                if (bean.getCode() == 200) {
+                    setItemInfo(bean);
+                } else {
+                    ToastShow(bean.getMsg());
+                }
+            }
+
+            @Override
+            public void onErrorLIstener(String error) {
+                super.onErrorLIstener(error);
+            }
+        });
+
+    }
+
+    private void setItemInfo(RegistInforBean bean){
+        license_photo = pic_start + bean.getData().getDrivingLicenseImg();
+        RequestOptions options = new RequestOptions().placeholder(R.drawable.default_pic).error(R.drawable.default_pic);
+        Glide.with(this).load(license_photo).apply(options).into(mImgvResult);
+
+    }
+
 
     /*获取配置项目（查验项目、拍照项目、通道）*/
     private void getData(boolean more) {

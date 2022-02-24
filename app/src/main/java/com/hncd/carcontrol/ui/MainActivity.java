@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -16,6 +17,8 @@ import com.hncd.carcontrol.base.CarBaseActivity;
 import com.hncd.carcontrol.base.Constant;
 import com.hncd.carcontrol.bean.BaseBean;
 import com.hncd.carcontrol.bean.DisassemablVideo;
+import com.hncd.carcontrol.bean.EventMessage;
+import com.hncd.carcontrol.bean.MessageNoBean;
 import com.hncd.carcontrol.bean.RegistInforBean;
 import com.hncd.carcontrol.utils.CarHttp;
 import com.hncd.carcontrol.utils.HttpBackListener;
@@ -26,8 +29,13 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.bean.ZxingConfig;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,6 +56,7 @@ public class MainActivity extends CarBaseActivity {
     private String[][] mMain_strs = new String[][]{{"注销查验", "0"}, {"车辆拆解", "1"}, {"个人中心", "2"}};
     private MainRecyAdapter mMainRecyAdapter;
     private final int REQUEST_CODE_SCAN = 110;
+    private TextView mTv_red;
 
     @Override
     public int getContentLayoutId() {
@@ -96,7 +105,6 @@ public class MainActivity extends CarBaseActivity {
                 whatToGo(id);
             }
         });
-
     }
 
 
@@ -180,12 +188,73 @@ public class MainActivity extends CarBaseActivity {
                 super.onSuccessListener(result);
                 RegistInforBean bean = new Gson().fromJson(result.toString(), RegistInforBean.class);
                 if (bean.getCode() == 200) {
+                    bean.getData().setDrivingLicenseImg("");//Base64图片不能通过Bundle传递太大会报 android.os.TransactionTooLargeException: data parcel size 624508 bytes
                     Bundle bundle = new Bundle();
                     bundle.putString("data", code);
-                    bundle.putString("bean", result.toString());
+                    bundle.putString("bean", new Gson().toJson(bean));
                     Intent intent = new Intent(MainActivity.this, CheckResultActivity.class);
                     intent.putExtras(bundle);
                     startActivity(intent);
+                } else {
+                    ToastShow(bean.getMsg());
+                }
+            }
+
+            @Override
+            public void onErrorLIstener(String error) {
+                super.onErrorLIstener(error);
+            }
+        });
+    }
+
+    private boolean is_first = true;
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (is_first) {
+            mTv_red = mMainRecy.getLayoutManager().findViewByPosition(2).findViewById(R.id.item_main_num);
+            is_first = false;
+            getMsgNum();
+        }
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        getMsgNum();
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getEventMsgt(EventMessage msg) {
+        if (msg.getMessage().equals("msg")) {
+            getMsgNum();
+        }
+    }
+
+
+    /*获取未读消息数量*/
+    private void getMsgNum() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("userId", mUser_id);
+        String result = new Gson().toJson(map);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=UTF-8"), result);
+        CarHttp.getInstance().toGetData(CarHttp.getInstance().getApiService().getNoReadMessageNum(requestBody), new HttpBackListener() {
+            @Override
+            public void onSuccessListener(Object result) {
+                super.onSuccessListener(result);
+                MessageNoBean bean = new Gson().fromJson(result.toString(), MessageNoBean.class);
+                if (bean.getCode() == 200) {
+                    Integer num = bean.getData().getNum();
+                    if (mTv_red != null) {
+                        if (num > 0) {
+                            mTv_red.setVisibility(View.VISIBLE);
+                            mTv_red.setText(num.toString());
+                        } else {
+                            mTv_red.setVisibility(View.GONE);
+                        }
+                    }
                 } else {
                     ToastShow(bean.getMsg());
                 }

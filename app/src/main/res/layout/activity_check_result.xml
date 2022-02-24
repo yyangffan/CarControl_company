@@ -52,8 +52,8 @@
 
     <ImageView
         android:id="@+id/check_result_imgv"
-        android:layout_width="@dimen/dp_100"
-        android:layout_height="@dimen/dp_50"
+        android:layout_width="@dimen/dp_250"
+        android:layout_height="@dimen/dp_200"
         android:padding="@dimen/dp_1"
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_4"
