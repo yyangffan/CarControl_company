@@ -103,11 +103,11 @@ public class CheckResultActivity extends CarBaseActivity {
                 }
                 break;
             case R.id.check_result_imgv:
-                List<LocalMedia> sho_lo = new ArrayList<>();
+              /*  List<LocalMedia> sho_lo = new ArrayList<>();
                 LocalMedia localMedia = new LocalMedia();
                 localMedia.setPath(license_photo);
                 sho_lo.add(localMedia);
-                shwoLook(sho_lo,0);
+                shwoLook(sho_lo,0);*/
                 break;
         }
     }
@@ -119,9 +119,14 @@ public class CheckResultActivity extends CarBaseActivity {
         mSmart.setEnableOverScrollBounce(true);//是否启用越界回弹
 
         RegistInforBean.DataBean data = mBean.getData();
-        license_photo = "data:image/jpg;base64,"+data.getDrivingLicenseImg();
-        RequestOptions options = new RequestOptions().placeholder(R.drawable.default_pic).error(R.drawable.default_pic);
-        Glide.with(this).load(license_photo).apply(options).into(mImgvResult);
+
+//        try {
+            license_photo = "data:image/jpg;base64,"+data.getDrivingLicenseImg();
+            RequestOptions options = new RequestOptions().placeholder(R.drawable.default_pic).error(R.drawable.default_pic);
+            Glide.with(this).load(license_photo).apply(options).into(mImgvResult);
+//        } catch (Exception e) {
+//            ToastShow("解析异常："+e.toString());
+//        }
 
 
         Integer auditStatus = data.getAuditStatus();//3可查验  4审核中 5查验完成

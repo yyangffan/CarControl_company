@@ -143,9 +143,11 @@ public class DissVideoActivity extends CarBaseActivity {
                 hideLoad();
                 BaseBean bean = new Gson().fromJson(result.toString(), BaseBean.class);
                 if (bean.getCode() == 200) {
-                    mStatus = "1"; //修改成已开始拆解
-                    mDissVideoComit.setText("结束拆解");
-                    getDisassemablVideo(data_result);
+//                    mStatus = "1"; //修改成已开始拆解
+//                    mDissVideoComit.setText("结束拆解");
+//                    getDisassemablVideo(data_result);
+                    setResult(RESULT_OK);
+                    finish();
                 }
                 Toast.makeText(DissVideoActivity.this, bean.getMsg(), Toast.LENGTH_LONG).show();
             }
@@ -173,9 +175,11 @@ public class DissVideoActivity extends CarBaseActivity {
                 super.onSuccessListener(result);hideLoad();
                 BaseBean bean = new Gson().fromJson(result.toString(), BaseBean.class);
                 if (bean.getCode() == 200) {
-                    mStatus = "2"; //修改成拆解已结束
-                    mDissVideoComit.setText("拆解已结束");
-                    mDissVideoComit.setBackgroundResource(R.drawable.bg_circle_graya);
+//                    mStatus = "2"; //修改成拆解已结束
+//                    mDissVideoComit.setText("拆解已结束");
+//                    mDissVideoComit.setBackgroundResource(R.drawable.bg_circle_graya);
+                    setResult(RESULT_OK);
+                    finish();
                 }
                 Toast.makeText(DissVideoActivity.this, bean.getMsg(), Toast.LENGTH_LONG).show();
             }

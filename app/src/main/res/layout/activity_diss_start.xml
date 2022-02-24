@@ -38,8 +38,8 @@
         android:id="@+id/diss_start_scan"
         android:layout_width="@dimen/dp_50"
         android:layout_height="@dimen/dp_40"
-        android:paddingTop="@dimen/dp_13"
         android:paddingLeft="@dimen/dp_13"
+        android:paddingTop="@dimen/dp_13"
         android:paddingRight="@dimen/dp_13"
         android:paddingBottom="@dimen/dp_8"
         android:src="@drawable/scan"
@@ -59,12 +59,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/diss_start_recy"
+        <FrameLayout
             android:layout_width="match_parent"
-            tools:itemCount="4"
-            tools:listitem="@layout/item_diss_start"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/diss_start_recy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:itemCount="4"
+                tools:listitem="@layout/item_diss_start" />
+
+            <TextView
+                android:id="@+id/diss_start_nodata"
+                android:text="暂无数据..."
+                android:textSize="18sp"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="@color/appColor"
+                android:background="@color/gray_ee"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </FrameLayout>
+
 
         <com.scwang.smart.refresh.footer.ClassicsFooter
             android:layout_width="match_parent"

@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -52,6 +53,8 @@ public class DissStartActivity extends CarBaseActivity {
     RecyclerView mDissStartRecy;
     @BindView(R.id.diss_start_smart)
     SmartRefreshLayout mSmart;
+    @BindView(R.id.diss_start_nodata)
+    TextView mTvNodata;
     private List<DissVideoListBean.DataBean> mLists;
     private DisStartAdapter mDisStartAdapter;
     private int pageNum = 1;
@@ -98,6 +101,7 @@ public class DissStartActivity extends CarBaseActivity {
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 mSmart.setEnableLoadMore(true);
                 pageNum = 1;
+                mTvNodata.setVisibility(View.GONE);
                 getData();
             }
         });
@@ -136,6 +140,11 @@ public class DissStartActivity extends CarBaseActivity {
                         mSmart.finishLoadMoreWithNoMoreData();
                     } else {
                         mSmart.setNoMoreData(false);
+                    }
+                    if(mLists.size() == 0){
+                        mTvNodata.setVisibility(View.VISIBLE);
+                    }else{
+                        mTvNodata.setVisibility(View.GONE);
                     }
                 } else {
                     mSmart.finishLoadMoreWithNoMoreData();
@@ -245,7 +254,7 @@ public class DissStartActivity extends CarBaseActivity {
                     bundle.putString("bean", result.toString());
                     Intent intent = new Intent(DissStartActivity.this, DissVideoActivity.class);
                     intent.putExtras(bundle);
-                    startActivityForResult(intent,REQUEST_CODE_DISS);
+                    startActivityForResult(intent, REQUEST_CODE_DISS);
                 } else {
                     ToastShow(bean.getMsg());
                 }
