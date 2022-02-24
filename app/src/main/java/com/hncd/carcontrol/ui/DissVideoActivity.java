@@ -66,6 +66,7 @@ public class DissVideoActivity extends CarBaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.check_back:
+                setResult(RESULT_OK);
                 finish();
                 break;
             case R.id.diss_video_ll:
@@ -130,6 +131,8 @@ public class DissVideoActivity extends CarBaseActivity {
         Map<String, Object> map = new HashMap<>();
         map.put("serialNumber", data_result);
         map.put("lineId", lineId);
+        map.put("deptId", mLoginBean.getData().getDeptId());
+        map.put("userId", mUser_id);
         String result = new Gson().toJson(map);
         showLoad();
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=UTF-8"), result);
@@ -221,5 +224,9 @@ public class DissVideoActivity extends CarBaseActivity {
         mTongdPopWindow.showAsDropDown(mCheckEndLL, 0, 10);
     }
 
-
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_OK);
+        super.onBackPressed();
+    }
 }

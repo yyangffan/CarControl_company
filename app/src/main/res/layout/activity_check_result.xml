@@ -49,6 +49,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
+
+    <ImageView
+        android:id="@+id/check_result_imgv"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="@dimen/dp_50"
+        android:padding="@dimen/dp_1"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_4"
+        android:background="@drawable/bg_stroke_gray"
+        android:scaleType="centerCrop"
+        android:src="@drawable/default_pic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+
     <com.scwang.smart.refresh.layout.SmartRefreshLayout
         android:id="@+id/check_result_smart"
         android:layout_width="match_parent"
@@ -57,7 +71,7 @@
         app:layout_constraintBottom_toTopOf="@+id/check_result_start"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView9">
+        app:layout_constraintTop_toBottomOf="@+id/check_result_imgv">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/check_result_recy"

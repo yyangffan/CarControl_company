@@ -16,7 +16,16 @@ public class RegistInforBean extends BaseBean{
 
    public static class DataBean {
       private Integer auditStatus;
+      private String drivingLicenseImg;
       private List<RegInfoBean> regInfo;
+
+      public String getDrivingLicenseImg() {
+         return drivingLicenseImg;
+      }
+
+      public void setDrivingLicenseImg(String drivingLicenseImg) {
+         this.drivingLicenseImg = drivingLicenseImg;
+      }
 
       public Integer getAuditStatus() {
          return auditStatus;

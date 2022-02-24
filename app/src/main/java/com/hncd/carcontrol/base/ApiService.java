@@ -132,6 +132,15 @@ public interface ApiService {
     Observable<JSONObject> getCheckInfo(@Body RequestBody body);
 
     /**
+     * 根据单位编号查询拆解视频记录
+     *
+     * @param body
+     * @return
+     */
+    @POST("cancellation/getDisassemablVideoByDeptId")
+    Observable<JSONObject> getDisassemablVideoByDeptId(@Body RequestBody body);
+
+    /**
      * 单文件上传
      *
      * @param map 文件

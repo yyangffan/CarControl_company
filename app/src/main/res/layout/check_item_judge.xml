@@ -30,29 +30,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
-    <ImageView
-        android:id="@+id/check_judge_imgv"
-        android:layout_width="@dimen/dp_100"
-        android:layout_height="@dimen/dp_50"
-        android:layout_marginTop="@dimen/dp_4"
-        android:layout_marginLeft="@dimen/dp_4"
-        android:padding="@dimen/dp_0_5"
-        android:elevation="@dimen/dp_2"
-        android:background="@drawable/bg_stroke_gray"
-        android:scaleType="centerCrop"
-        android:src="@drawable/default_pic"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/check_judge_recy"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/dp_4"
         android:background="@color/ftftft"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/check_judge_imgv" />
+        app:layout_constraintTop_toBottomOf="@+id/line" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

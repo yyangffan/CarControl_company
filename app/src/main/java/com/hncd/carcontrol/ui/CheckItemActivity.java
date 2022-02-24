@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.hncd.carcontrol.R;
 import com.hncd.carcontrol.adapter.ImagePhotoAdapter;
@@ -86,8 +87,6 @@ public class CheckItemActivity extends CarBaseActivity {
     SmartRefreshLayout mSmart;
     @BindView(R.id.checki_item_judge)
     View mCheckItemJudge;
-    @BindView(R.id.check_judge_imgv)
-    ImageView mCheckItemImgv;
     @BindView(R.id.checki_item_photo)
     View mCheckItemPhoto;
     @BindView(R.id.check_judge_recy)
@@ -242,7 +241,6 @@ public class CheckItemActivity extends CarBaseActivity {
     private void initViews() {
         initPop();
         initBtDig();
-        Glide.with(this).load("https://t7.baidu.com/it/u=3332251293,4211134448&fm=193&f=GIF").into(mCheckItemImgv);
         mMapList = new ArrayList<>();
         mMapList.addAll(mBean.getData().getCheckItem());
         for (int i = 0; i < mBean.getData().getCheckItemRefit().size(); i++) {

@@ -13,10 +13,16 @@ import com.hncd.carcontrol.R;
 import com.hncd.carcontrol.adapter.DisStartAdapter;
 import com.hncd.carcontrol.base.CarBaseActivity;
 import com.hncd.carcontrol.base.Constant;
+import com.hncd.carcontrol.bean.BaseBean;
 import com.hncd.carcontrol.bean.DisassemablVideo;
+import com.hncd.carcontrol.bean.DissVideoListBean;
+import com.hncd.carcontrol.bean.FinishDissBean;
 import com.hncd.carcontrol.utils.CarHttp;
 import com.hncd.carcontrol.utils.HttpBackListener;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.superc.yyfflibrary.utils.titlebar.TitleUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.yzq.zxinglibrary.android.CaptureActivity;
@@ -29,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -40,12 +47,14 @@ import okhttp3.RequestBody;
 
 public class DissStartActivity extends CarBaseActivity {
     private final int REQUEST_CODE_VIDEO = 111;
+    private final int REQUEST_CODE_DISS = 112;
     @BindView(R.id.diss_start_recy)
     RecyclerView mDissStartRecy;
     @BindView(R.id.diss_start_smart)
     SmartRefreshLayout mSmart;
-    private List<Map<String,Object>> mLists;
+    private List<DissVideoListBean.DataBean> mLists;
     private DisStartAdapter mDisStartAdapter;
+    private int pageNum = 1;
 
     @Override
     public int getContentLayoutId() {
@@ -56,10 +65,6 @@ public class DissStartActivity extends CarBaseActivity {
     public void init() {
         ButterKnife.bind(this);
         TitleUtils.setStatusTextColor(false, this);
-        mSmart.setEnablePureScrollMode(true);//是否启用纯滚动模式
-        mSmart.setEnableNestedScroll(true);//是否启用嵌套滚动;
-        mSmart.setEnableOverScrollDrag(true);//是否启用越界拖动（仿苹果效果）1.0.4
-        mSmart.setEnableOverScrollBounce(true);//是否启用越界回弹
         initViews();
     }
 
@@ -78,14 +83,7 @@ public class DissStartActivity extends CarBaseActivity {
 
     private void initViews() {
         mLists = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Map<String,Object> map = new HashMap<>();
-            if(i%2==0){
-                map.put("edtm","2022-02-24 13:"+(i+10));
-            }
-            mLists.add(map);
-        }
-        mDisStartAdapter = new DisStartAdapter(this,mLists);
+        mDisStartAdapter = new DisStartAdapter(this, mLists);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         mDissStartRecy.setLayoutManager(manager);
         mDissStartRecy.setAdapter(mDisStartAdapter);
@@ -95,22 +93,92 @@ public class DissStartActivity extends CarBaseActivity {
                 toFinish(pos);
             }
         });
-
-
+        mSmart.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                mSmart.setEnableLoadMore(true);
+                pageNum = 1;
+                getData();
+            }
+        });
+        mSmart.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                ++pageNum;
+                getData();
+            }
+        });
         getData();
     }
 
     private void getData() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("pageNum", pageNum);
+        map.put("pageSize", 10);
+        map.put("deptId", mLoginBean.getData().getDeptId());
+        map.put("userId", mUser_id);
+        String result = new Gson().toJson(map);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=UTF-8"), result);
+        CarHttp.getInstance().toGetData(CarHttp.getInstance().getApiService().getDisassemablVideoByDeptId(requestBody), new HttpBackListener() {
+            @Override
+            public void onSuccessListener(Object result) {
+                super.onSuccessListener(result);
+                mSmart.finishRefresh();
+                mSmart.finishLoadMore();
+                DissVideoListBean bean = new Gson().fromJson(result.toString(), DissVideoListBean.class);
+                if (bean.getCode() == 200) {
+                    if (pageNum == 1) {
+                        mLists.clear();
+                    }
+                    mLists.addAll(bean.getData());
+                    mDisStartAdapter.notifyDataSetChanged();
+                    if (bean.getData() == null || bean.getData().size() < 10) {
+                        mSmart.finishLoadMoreWithNoMoreData();
+                    } else {
+                        mSmart.setNoMoreData(false);
+                    }
+                } else {
+                    mSmart.finishLoadMoreWithNoMoreData();
+                    Toast.makeText(DissStartActivity.this, bean.getMsg(), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onErrorLIstener(String error) {
+                super.onErrorLIstener(error);
+                mSmart.finishRefresh();
+                mSmart.finishLoadMore();
+            }
+        });
 
 
     }
 
-    private void toFinish(int pos){
-        ToastShow("已结束");
-        Map<String,Object> map = mLists.get(pos);
-        map.put("edtm",new SimpleDateFormat("yyyy-MM-dd hh:mm").format(new Date()));
-        mDisStartAdapter.notifyItemChanged(pos);
+    private void toFinish(int pos) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", mLists.get(pos).getID());
+        showLoad();
+        String result = new Gson().toJson(map);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=UTF-8"), result);
+        CarHttp.getInstance().toGetData(CarHttp.getInstance().getApiService().endDisassmblVideo(requestBody), new HttpBackListener() {
+            @Override
+            public void onSuccessListener(Object result) {
+                super.onSuccessListener(result);
+                hideLoad();
+                FinishDissBean bean = new Gson().fromJson(result.toString(), FinishDissBean.class);
+                if (bean.getCode() == 200) {
+                    mLists.get(pos).setENDTIME(bean.getData().getEndTime());
+                    mDisStartAdapter.notifyItemChanged(pos);
+                }
+                Toast.makeText(DissStartActivity.this, bean.getMsg(), Toast.LENGTH_LONG).show();
+            }
 
+            @Override
+            public void onErrorLIstener(String error) {
+                super.onErrorLIstener(error);
+                hideLoad();
+            }
+        });
 
     }
 
@@ -151,6 +219,10 @@ public class DissStartActivity extends CarBaseActivity {
                         getDisassemablVideo(content);
                     }
                     break;
+                case REQUEST_CODE_DISS:
+                    pageNum = 1;
+                    getData();
+                    break;
             }
 
         }
@@ -173,7 +245,7 @@ public class DissStartActivity extends CarBaseActivity {
                     bundle.putString("bean", result.toString());
                     Intent intent = new Intent(DissStartActivity.this, DissVideoActivity.class);
                     intent.putExtras(bundle);
-                    startActivity(intent);
+                    startActivityForResult(intent,REQUEST_CODE_DISS);
                 } else {
                     ToastShow(bean.getMsg());
                 }
@@ -188,9 +260,4 @@ public class DissStartActivity extends CarBaseActivity {
 
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        getData();
-    }
 }

@@ -1,11 +1,15 @@
 package com.hncd.carcontrol.ui;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.hncd.carcontrol.R;
 import com.hncd.carcontrol.adapter.CheckAdapter;
@@ -15,8 +19,10 @@ import com.hncd.carcontrol.bean.CheckAllBean;
 import com.hncd.carcontrol.bean.EventMessage;
 import com.hncd.carcontrol.bean.RegistInforBean;
 import com.hncd.carcontrol.utils.CarHttp;
+import com.hncd.carcontrol.utils.GlideEngine;
 import com.hncd.carcontrol.utils.HttpBackListener;
 import com.hncd.carcontrol.utils.ItemRecyDecoration;
+import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.bean.CheckItemPhotoBean;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -45,6 +51,8 @@ public class CheckResultActivity extends CarBaseActivity {
     SmartRefreshLayout mSmart;
     @BindView(R.id.check_result_start)
     Button mBt_start;
+    @BindView(R.id.check_result_imgv)
+    ImageView mImgvResult;
 
     private String data_result = "";
     private List<RegistInforBean.DataBean.RegInfoBean> mMapList;
@@ -54,6 +62,7 @@ public class CheckResultActivity extends CarBaseActivity {
     private String fanx_data = "";
     private String note = "";
     private boolean data_ready = false;
+    private String license_photo = "";
 
     @Override
     public int getContentLayoutId() {
@@ -72,7 +81,7 @@ public class CheckResultActivity extends CarBaseActivity {
         initView();
     }
 
-    @OnClick({R.id.check_back, R.id.check_result_start})
+    @OnClick({R.id.check_back, R.id.check_result_start,R.id.check_result_imgv})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.check_back:
@@ -93,6 +102,13 @@ public class CheckResultActivity extends CarBaseActivity {
                     ToastShow(note);
                 }
                 break;
+            case R.id.check_result_imgv:
+                List<LocalMedia> sho_lo = new ArrayList<>();
+                LocalMedia localMedia = new LocalMedia();
+                localMedia.setPath(license_photo);
+                sho_lo.add(localMedia);
+                shwoLook(sho_lo,0);
+                break;
         }
     }
 
@@ -103,6 +119,11 @@ public class CheckResultActivity extends CarBaseActivity {
         mSmart.setEnableOverScrollBounce(true);//是否启用越界回弹
 
         RegistInforBean.DataBean data = mBean.getData();
+        license_photo = "data:image/jpg;base64,"+data.getDrivingLicenseImg();
+        RequestOptions options = new RequestOptions().placeholder(R.drawable.default_pic).error(R.drawable.default_pic);
+        Glide.with(this).load(license_photo).apply(options).into(mImgvResult);
+
+
         Integer auditStatus = data.getAuditStatus();//3可查验  4审核中 5查验完成
         switch (auditStatus) {
             case 0:
@@ -235,7 +256,7 @@ public class CheckResultActivity extends CarBaseActivity {
         List<CheckAllBean.DataBean.CheckItemBean> itemRefi_all = data_all.getCheckItemRefit();
         List<CheckAllBean.DataBean.CheckItemBean> itemRefit_again = data_again.getCheckItemRefit();
         for (CheckAllBean.DataBean.CheckItemBean bean : itemRefit_again) {
-            String itemCode =(String) bean.getItemCfgRefitId();
+            String itemCode = (String) bean.getItemCfgRefitId();
             for (int i = 0; i < itemRefi_all.size(); i++) {
                 CheckAllBean.DataBean.CheckItemBean itemBean = itemRefi_all.get(i);
                 if (itemCode.equals(itemBean.getItemCfgId())) {
@@ -285,6 +306,21 @@ public class CheckResultActivity extends CarBaseActivity {
         checkAllBean.getData().setImages(mImageBeans);
         check_item = new Gson().toJson(checkAllBean);
         data_ready = true;
+    }
+
+    private void shwoLook(List<LocalMedia> selectList, int position) {
+        if (selectList.size() > 0) {
+            LocalMedia media = selectList.get(position);
+            String mimeType = media.getMimeType();
+            PictureSelector.create(this)
+                    .themeStyle(R.style.picture_default_style) // xml设置主题
+                    //.setPictureWindowAnimationStyle(animationStyle)// 自定义页面启动动画
+                    .setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)// 设置相册Activity方向，不设置默认使用系统
+                    .isNotPreviewDownload(true)// 预览图片长按是否可以下载
+                    //.bindCustomPlayVideoCallback(new MyVideoSelectedPlayCallback(getContext()))// 自定义播放回调控制，用户可以使用自己的视频播放界面
+                    .imageEngine(GlideEngine.createGlideEngine())// 外部传入图片加载引擎，必传项
+                    .openExternalPreview(position, selectList);
+        }
     }
 
 

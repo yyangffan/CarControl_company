@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.hncd.carcontrol.R;
+import com.hncd.carcontrol.bean.DissVideoListBean;
 
 import java.util.List;
 import java.util.Map;
@@ -18,11 +19,11 @@ import butterknife.ButterKnife;
 
 public class DisStartAdapter extends RecyclerView.Adapter<DisStartAdapter.ViewHolder> {
     private Context mContext;
-    private List<Map<String, Object>> mLists;
+    private List<DissVideoListBean.DataBean> mLists;
     private LayoutInflater mInflater;
     private OnItemClickListener mOnItemClickListener;
 
-    public DisStartAdapter(Context context, List<Map<String, Object>> stringList) {
+    public DisStartAdapter(Context context, List<DissVideoListBean.DataBean> stringList) {
         mContext = context;
         mLists = stringList;
         mInflater = LayoutInflater.from(mContext);
@@ -41,13 +42,14 @@ public class DisStartAdapter extends RecyclerView.Adapter<DisStartAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder vh, int position) {
-        Map<String, Object> bean = mLists.get(position);
-        vh.mItemDissLscode.setText("1241241241" + position);
-        vh.mItemDissTd.setText(String.valueOf(position + 1));
-        vh.mItemDissSttm.setText("2022-02-23 12:00");
-        String edTm = (String) bean.get("edtm");
+        DissVideoListBean.DataBean bean = mLists.get(position);
+        vh.mItemDissLscode.setText("流水号："+bean.getLSH());
+        vh.mItemDissTd.setText(bean.getLINE_NO());
+        vh.mItemDissSttm.setText(bean.getSTARTTIME());
+        String edTm = bean.getENDTIME();
         if (TextUtils.isEmpty(edTm)) {
             vh.mItemDissFinish.setVisibility(View.VISIBLE);
+            vh.mItemDissEdtm.setText("");
         } else {
             vh.mItemDissEdtm.setText(edTm);
             vh.mItemDissFinish.setVisibility(View.GONE);
