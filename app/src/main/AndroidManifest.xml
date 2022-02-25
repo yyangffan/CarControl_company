@@ -105,8 +105,8 @@
 
         <service
             android:name=".ui.FrontService"
-            android:enabled="true"
-            android:exported="true" /> <!-- 全面屏 -->
+            android:enabled="false"
+            android:exported="false" /> <!-- 全面屏 -->
         <meta-data
             android:name="android.max_aspect"
             android:value="2.1" />

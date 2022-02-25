@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -135,16 +136,28 @@ public class DownDialog extends Dialog {
             @Override
             public void taskEnd(@NonNull DownloadTask task, @NonNull EndCause cause, @Nullable Exception realCause) {
                 Log.i("DownDialog", "taskEnd: 线层结束");
+                if (mOnBtClickListener != null) {
+                    new CountDownTimer(2000,1000){
+                        @Override
+                        public void onTick(long l) {
+
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            mOnBtClickListener.onDownFinListener(file);
+                            dismiss();
+                        }
+                    }.start();
+
+                }
             }
 
             @Override
             public void fetchEnd(@NonNull DownloadTask task, int blockIndex, long contentLength) {
                 super.fetchEnd(task, blockIndex, contentLength);
                 Log.i("DownDialog", "fetchEnd: 下载结束");
-                if (mOnBtClickListener != null) {
-                    mOnBtClickListener.onDownFinListener(file);
-                    dismiss();
-                }
+
             }
         });
     }
