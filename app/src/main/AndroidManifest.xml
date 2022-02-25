@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- 适配Android R包可见性 开始 -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
     <queries package="com.hncd.carcontrol">
         <intent>
             <action android:name="android.media.action.IMAGE_CAPTURE" />
@@ -35,10 +36,12 @@
         tools:replace="android:allowBackup,andrpod:label">
         <activity
             android:name=".ui.DissStartActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.DissVideoActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.picture.PictureCusActivity"
             android:screenOrientation="portrait" />
@@ -73,13 +76,24 @@
             android:name=".ui.CancelCheckActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.LoginActivity"
-            android:exported="true">
-            <intent-filter>
+            android:name=".ui.SplashActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+           <!-- <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
+        </activity>
+        <activity
+            android:name=".ui.LoginActivity"
+            android:exported="true">
+               <intent-filter>
+                   <action android:name="android.intent.action.MAIN" />
+
+                   <category android:name="android.intent.category.LAUNCHER" />
+               </intent-filter>
         </activity>
         <activity
             android:name=".ui.ConfigSetActivity"
@@ -96,6 +110,17 @@
         <meta-data
             android:name="android.max_aspect"
             android:value="2.1" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.hncd.carcontrol.provider"
+            android:exported="false"
+            tools:replace="android:authorities"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
     </application>
 
 </manifest>

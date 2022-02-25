@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ import com.hncd.carcontrol.bean.DisassemablVideo;
 import com.hncd.carcontrol.bean.EventMessage;
 import com.hncd.carcontrol.bean.MessageNoBean;
 import com.hncd.carcontrol.bean.RegistInforBean;
+import com.hncd.carcontrol.dig_pop.DownDialog;
 import com.hncd.carcontrol.utils.CarHttp;
 import com.hncd.carcontrol.utils.HttpBackListener;
 import com.hncd.carcontrol.utils.NotificationsUtils;
@@ -33,10 +35,12 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -57,6 +61,7 @@ public class MainActivity extends CarBaseActivity {
     private MainRecyAdapter mMainRecyAdapter;
     private final int REQUEST_CODE_SCAN = 110;
     private TextView mTv_red;
+    private String down_url = "https://08e121f148084ce20b2c0e2866f93cf6.dlied1.cdntips.net/download.sj.qq.com/upload/connAssitantDownload/upload/MobileAssistant_1.apk";
 
     @Override
     public int getContentLayoutId() {
@@ -82,14 +87,43 @@ public class MainActivity extends CarBaseActivity {
         mSmart.setEnableOverScrollDrag(true);//是否启用越界拖动（仿苹果效果）1.0.4
         mSmart.setEnableOverScrollBounce(true);//是否启用越界回弹
         initViews();
+    /*    new DownDialog(this,down_url).setOnBtClickListener(new DownDialog.OnBtClickListener() {
+            @Override
+            public void onCancelListener() {
+                finish();
+            }
+
+            @Override
+            public void onUpdateListener() {
+
+            }
+
+            @Override
+            public void onDownFinListener(File file) {
+                installApk2(file);
+            }
+        }).show();*/
     }
 
-    @OnClick(R.id.main_back)
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.main_back:
-//                finish();
-                break;
+    /**
+     * 安装apk  适配androidQ
+     */
+    private void installApk2(File file) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Uri apkUri = FileProvider.getUriForFile(this, "com.hncd.carcontrol.provider", file);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+            } else {
+                intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+            }
+            startActivity(intent);
+            finish();
+        } catch (Exception e) {
+            ToastShow("安装失败");
+            Log.e(TAG, "installApk2: "+e.toString());
         }
     }
 
