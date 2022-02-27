@@ -41,8 +41,10 @@
         <entry key="..\:/a_android/Private_work/car_latest/car_control/picture_library/src/main/res/layout/picture_prompt_dialog.xml" value="0.20168066580377575" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.390625" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable/bg_appcolor.xml" value="0.390625" />
+        <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable/bg_bigcorner_white.xml" value="0.390625" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable/bg_bt_login.xml" value="0.390625" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable/bg_circle_graya.xml" value="0.390625" />
+        <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable/bg_corner_white.xml" value="0.390625" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable/bg_dig_bt.xml" value="0.390625" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable/bg_dsh_stro.xml" value="0.390625" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable/bg_login_bt.xml" value="0.3194444444444444" />
@@ -66,6 +68,7 @@
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/layout/dialog_download.xml" value="0.5" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/layout/dialog_loading.xml" value="0.37447916666666664" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/layout/dialog_note.xml" value="0.34198331788693237" />
+        <entry key="..\:/mine_work/CarControl-master/app/src/main/res/layout/dialog_note_test.xml" value="0.5" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/layout/dig_bt_select.xml" value="0.1" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/layout/dig_showimgv.xml" value="0.33" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/layout/image_photo.xml" value="0.37447916666666664" />

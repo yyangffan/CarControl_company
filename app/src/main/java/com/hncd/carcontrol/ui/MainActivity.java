@@ -146,6 +146,9 @@ public class MainActivity extends CarBaseActivity {
         switch (id) {
             case "0":
                 rxPermissionTest();
+               /* EventMessage event_msg = new EventMessage("msg");
+                event_msg.setContent("刚才的查验被驳回了");
+                EventBus.getDefault().post(event_msg);*/
                 break;
             case "1":
                 statActivity(DissStartActivity.class);

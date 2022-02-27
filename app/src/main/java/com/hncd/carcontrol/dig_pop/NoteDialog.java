@@ -36,6 +36,7 @@ public class NoteDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        setContentView(R.layout.dialog_note_test);
         setContentView(R.layout.dialog_note);
         ButterKnife.bind(this);
         setCanceledOnTouchOutside(false);

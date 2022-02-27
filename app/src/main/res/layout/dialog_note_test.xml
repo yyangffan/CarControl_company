@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:elevation="@dimen/dp_4"
+    android:layout_marginLeft="@dimen/dp_14"
+    android:layout_marginRight="@dimen/dp_14"
+    android:layout_marginBottom="@dimen/dp_14"
+    android:layout_marginTop="@dimen/title_pdtop"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_bigcorner_white"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/note_imgv"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_10"
+        android:src="@mipmap/logo"
+        app:layout_constraintBottom_toBottomOf="@+id/note_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/note_tv" />
+
+    <TextView
+        android:id="@+id/note_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_14"
+        android:text="@string/app_name"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@+id/note_imgv"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/note_line"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_0_5"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        android:background="@color/line_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/note_tv" />
+
+    <TextView
+        android:id="@+id/tccamera_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_16"
+        android:gravity="center"
+        android:paddingTop="@dimen/title_pdtop"
+        android:textColor="@color/appColor"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/note_line"
+        tools:text="三级家的感觉怪" />
+</androidx.constraintlayout.widget.ConstraintLayout>
