@@ -25,6 +25,15 @@ public interface ApiService {
     Observable<JSONObject> login(@Body RequestBody body);
 
     /**
+     * 获取当前版本号
+     *
+     * @param body
+     * @return
+     */
+    @POST("cancellation/getPdaVersion")
+    Observable<JSONObject> getPdaVersion();
+
+    /**
      * 连接测试
      *
      * @return

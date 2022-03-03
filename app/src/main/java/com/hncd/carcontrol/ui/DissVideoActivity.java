@@ -223,6 +223,7 @@ public class DissVideoActivity extends CarBaseActivity {
             @Override
             public void onAdapterListener(String name, String id) {
                 mDissVideoTd.setText(name);
+                lineId = id;
             }
         });
         mTongdPopWindow.showAsDropDown(mCheckEndLL, 0, 10);

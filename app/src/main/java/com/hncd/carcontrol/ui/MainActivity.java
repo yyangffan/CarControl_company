@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -61,7 +62,6 @@ public class MainActivity extends CarBaseActivity {
     private MainRecyAdapter mMainRecyAdapter;
     private final int REQUEST_CODE_SCAN = 110;
     private TextView mTv_red;
-    private String down_url = "https://08e121f148084ce20b2c0e2866f93cf6.dlied1.cdntips.net/download.sj.qq.com/upload/connAssitantDownload/upload/MobileAssistant_1.apk";
 
     @Override
     public int getContentLayoutId() {
@@ -87,44 +87,7 @@ public class MainActivity extends CarBaseActivity {
         mSmart.setEnableOverScrollDrag(true);//是否启用越界拖动（仿苹果效果）1.0.4
         mSmart.setEnableOverScrollBounce(true);//是否启用越界回弹
         initViews();
-    /*    new DownDialog(this,down_url).setOnBtClickListener(new DownDialog.OnBtClickListener() {
-            @Override
-            public void onCancelListener() {
-                finish();
-            }
-
-            @Override
-            public void onUpdateListener() {
-
-            }
-
-            @Override
-            public void onDownFinListener(File file) {
-                installApk2(file);
-            }
-        }).show();*/
-    }
-
-    /**
-     * 安装apk  适配androidQ
-     */
-    private void installApk2(File file) {
-        try {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                Uri apkUri = FileProvider.getUriForFile(this, "com.hncd.carcontrol.provider", file);
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
-            } else {
-                intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
-            }
-            startActivity(intent);
-            finish();
-        } catch (Exception e) {
-            ToastShow("安装失败");
-            Log.e(TAG, "installApk2: "+e.toString());
-        }
+//        getPdaVersion();
     }
 
     private void initViews() {
@@ -245,6 +208,7 @@ public class MainActivity extends CarBaseActivity {
     }
 
     private boolean is_first = true;
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -303,5 +267,71 @@ public class MainActivity extends CarBaseActivity {
             }
         });
     }
+
+    private String down_url = "";
+    private void getPdaVersion() {
+        CarHttp.getInstance().toGetData(CarHttp.getInstance().getApiService().getPdaVersion(), new HttpBackListener() {
+            @Override
+            public void onSuccessListener(Object result) {
+                super.onSuccessListener(result);
+                BaseBean bean = new Gson().fromJson(result.toString(), BaseBean.class);
+                if (bean.getCode() == 200) {
+                    down_url = "https://cos.pgyer.com/981381188ec5d61ac25244d29a92b723.apk?sign=b3b33e3626dfd9d581e874d0baea4d01&t=1646294502&response-content-disposition=attachment%3Bfilename%3D%E6%9F%A5%E9%AA%8C%E7%9B%91%E7%AE%A1_1.0.apk";
+                    if(!TextUtils.isEmpty(down_url))
+                    showDownDig();
+                }
+            }
+
+            @Override
+            public void onErrorLIstener(String error) {
+                super.onErrorLIstener(error);
+            }
+        });
+
+
+    }
+
+    private void showDownDig() {
+        new DownDialog(this, down_url).setOnBtClickListener(new DownDialog.OnBtClickListener() {
+            @Override
+            public void onCancelListener() {
+                finish();
+            }
+
+            @Override
+            public void onUpdateListener() {
+
+            }
+
+            @Override
+            public void onDownFinListener(File file) {
+                installApk2(file);
+            }
+        }).show();
+
+    }
+
+    /**
+     * 安装apk  适配androidQ
+     */
+    private void installApk2(File file) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Uri apkUri = FileProvider.getUriForFile(this, "com.hncd.carcontrol.provider", file);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+            } else {
+                intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+            }
+            startActivity(intent);
+            finish();
+        } catch (Exception e) {
+            ToastShow("安装失败");
+            Log.e(TAG, "installApk2: " + e.toString());
+        }
+    }
+
 
 }
