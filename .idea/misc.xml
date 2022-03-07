@@ -51,10 +51,12 @@
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable/bg_login_noso.xml" value="0.390625" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable/bg_main.xml" value="0.390625" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable/bg_progress.xml" value="0.31145833333333334" />
+        <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable/bg_stroke_edt.xml" value="0.390625" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable/bg_stroke_gray.xml" value="0.390625" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable/bg_yel.xml" value="0.390625" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable/ic_launcher_background.xml" value="0.390625" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/drawable/logn_cb.xml" value="0.33229166666666665" />
+        <entry key="..\:/mine_work/CarControl-master/app/src/main/res/layout/activity_cancel_check.xml" value="0.1" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/layout/activity_check_end.xml" value="0.37447916666666664" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/layout/activity_check_item.xml" value="0.33" />
         <entry key="..\:/mine_work/CarControl-master/app/src/main/res/layout/activity_check_result.xml" value="0.33" />

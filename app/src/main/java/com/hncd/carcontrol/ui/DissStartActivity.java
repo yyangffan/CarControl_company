@@ -79,7 +79,8 @@ public class DissStartActivity extends CarBaseActivity {
                 finish();
                 break;
             case R.id.diss_start_scan:
-                rxPermissionTest();
+                CancelCheckActivity.startMe(this,CancelCheckActivity.REQUEST_CODE_VIDEO);
+//                rxPermissionTest();
                 break;
         }
     }
@@ -191,82 +192,10 @@ public class DissStartActivity extends CarBaseActivity {
 
     }
 
-
-    /*请求相机权限--如果可打开相册需同时请求另一个权限*/
-    private void rxPermissionTest() {
-        RxPermissions rxPermissions = new RxPermissions(this);
-        rxPermissions.request(Manifest.permission.CAMERA).subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean granted) throws Exception {
-                if (granted) {
-                    Intent intent = new Intent(DissStartActivity.this, CaptureActivity.class);
-                    ZxingConfig config = new ZxingConfig();
-                    config.setShowAlbum(false);//是否显示相册
-                    config.setFullScreenScan(true);//是否全屏扫描  默认为true  设为false则只会在扫描框中扫描
-                    intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
-                    startActivityForResult(intent, REQUEST_CODE_VIDEO);
-
-                } else {
-                    Uri packageURI = Uri.parse("package:" + getPackageName());
-                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageURI);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    Toast.makeText(DissStartActivity.this, "没有权限无法扫描呦", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-    }
-
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == -1) {
-            switch (requestCode) {
-                case REQUEST_CODE_VIDEO:
-                    if (data != null) {
-                        String content = data.getStringExtra(Constant.CODED_CONTENT);
-                        getDisassemablVideo(content);
-                    }
-                    break;
-                case REQUEST_CODE_DISS:
-                    pageNum = 1;
-                    getData();
-                    break;
-            }
-
-        }
+    protected void onRestart() {
+        super.onRestart();
+        pageNum = 1;
+        getData();
     }
-
-    private void getDisassemablVideo(String code) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("deptId", mLoginBean.getData().getDeptId());
-        map.put("serialNumber", code);
-        String result = new Gson().toJson(map);
-        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=UTF-8"), result);
-        CarHttp.getInstance().toGetData(CarHttp.getInstance().getApiService().getDisassemablVideo(requestBody), new HttpBackListener() {
-            @Override
-            public void onSuccessListener(Object result) {
-                super.onSuccessListener(result);
-                DisassemablVideo bean = new Gson().fromJson(result.toString(), DisassemablVideo.class);
-                if (bean.getCode() == 200) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("data", code);
-                    bundle.putString("bean", result.toString());
-                    Intent intent = new Intent(DissStartActivity.this, DissVideoActivity.class);
-                    intent.putExtras(bundle);
-                    startActivityForResult(intent, REQUEST_CODE_DISS);
-                } else {
-                    ToastShow(bean.getMsg());
-                }
-            }
-
-            @Override
-            public void onErrorLIstener(String error) {
-                super.onErrorLIstener(error);
-            }
-        });
-
-
-    }
-
 }
