@@ -1,6 +1,7 @@
 package com.hncd.carcontrol.ui;
 
 import android.content.Intent;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -19,9 +20,15 @@ import com.hncd.carcontrol.dig_pop.TongdPopWindow;
 import com.hncd.carcontrol.utils.CarHttp;
 import com.hncd.carcontrol.utils.HttpBackListener;
 import com.ljy.devring.DevRing;
+import com.ljy.devring.logger.RingLog;
+import com.ljy.devring.util.FileUtil;
 import com.luck.picture.lib.bean.CheckItemPhotoBean;
 import com.superc.yyfflibrary.utils.titlebar.TitleUtils;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -138,7 +145,7 @@ public class CheckEndActivity extends CarBaseActivity {
             mCheckEndRbyes.setChecked(checkApprove.getNewEnergyFlag().equals("1") ? false : true);
             td_id = checkApprove.getNvrLineId();
             for (CheckAllBean.DataBean.CheckLineBean bean : mTongd) {
-                if(td_id.equals(bean.getId())){
+                if (td_id.equals(bean.getId())) {
                     mCheckEndTd.setText(bean.getLineNo());
                     break;
                 }
@@ -155,8 +162,8 @@ public class CheckEndActivity extends CarBaseActivity {
         map_aprove.put("newEnergyFlag", mCheckEndRbno.isChecked() ? "1" : "0");//是否新能源 0:是  1：否
         map_up.put("checkApprove", map_aprove);
         showLoad();
-        String result = new Gson().toJson(map_up);
-        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=UTF-8"), result);
+        String result_data = new Gson().toJson(map_up);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=UTF-8"), result_data);
         CarHttp.getInstance().toGetData(CarHttp.getInstance().getApiService().saveInfo(requestBody), new HttpBackListener() {
             @Override
             public void onSuccessListener(Object result) {
@@ -166,6 +173,8 @@ public class CheckEndActivity extends CarBaseActivity {
                 if (bean.getCode() == 200) {
                     startActivity(new Intent(CheckEndActivity.this, MainActivity.class));
                     DevRing.activityListManager().killAllExclude(MainActivity.class);
+                }else{
+                    toSaveLog(result_data,bean.getMsg());
                 }
                 ToastShow(bean.getMsg());
             }
@@ -174,9 +183,33 @@ public class CheckEndActivity extends CarBaseActivity {
             public void onErrorLIstener(String error) {
                 super.onErrorLIstener(error);
                 hideLoad();
+                toSaveLog(result_data,error);
             }
         });
+    }
 
+    private void toSaveLog(String result, String msg) {
+        String out_str = msg + ": " + result;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        try {
+            String time = simpleDateFormat.format(new Date());
+            String fileName = time + ".txt";
+            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                File dirTemp = FileUtil.getDirectory(FileUtil.getExternalCacheDir(this), "carcontrol_log");
+                File fileOutput = FileUtil.getFile(dirTemp, fileName);
+
+                if (fileOutput == null) {
+                    Log.e(TAG, "toSaveLog: 文件创建失败");
+                    return;
+                }
+                FileOutputStream fos = new FileOutputStream(fileOutput);
+                fos.write(out_str.getBytes());
+                fos.close();
+                Log.e(TAG, "toSaveLog: 文件已保存");
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "toSaveLog: 文件创建失败" + e.toString());
+        }
 
     }
 

@@ -410,15 +410,56 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
         }
         //通知调用界面进行数据更新
         if (PictureSelectionConfig.listener != null) {
+            showPleaseDialog();
             PictureSelectionConfig.listener.onCusResult(images, select_pos, nowImgPos,new OnActiBackListener(){
                 @Override
-                public void onActiBackListener(String url) {
+                public void onActiBackListener(boolean success,String url) {
                     Log.e(TAG, "onActiBackListener: "+url );
+                    configPic(success,images);
                 }
             });
         }
-
+    /*
         mCameraView.resetState();
+        if (nowImgPos == mCusImgvs.size()) {//新增
+            LocalMedia localMedia = images.get(0);
+            localMedia.setTitle(mtv_check.getText().toString());
+            mCusImgvs.add(localMedia);
+            mPictcusAdapter.notifyItemInserted(nowImgPos);
+        } else {//修改
+            LocalMedia localMedia = mCusImgvs.get(nowImgPos);
+            localMedia.setPath(images.get(0).getPath());
+            mPictcusAdapter.notifyItemChanged(nowImgPos);
+        }
+
+        *//*自动选中下一个*//*
+        if (select_pos != mCheckItemPhotoLists.size() - 1) {
+            mCheckItemPhotoLists.get(select_pos).setHasTake(true);
+            mCheckItemPhotoLists.get(select_pos).setImgPos(nowImgPos);
+            select_pos += 1;
+            mDigPhopro.setSelect_pos(select_pos);
+            String title = mCheckItemPhotoLists.get(select_pos).getCheckItemCode() + ":" + mCheckItemPhotoLists.get(select_pos).getCheckItemName();
+            mtv_check.setText(title);
+            mtv_title.setText(title);//还有后续
+            CheckItemPhotoBean bean = mCheckItemPhotoLists.get(select_pos);
+            if (bean.isHasTake()) {
+                nowImgPos = bean.getImgPos();
+            } else {
+                nowImgPos = mCusImgvs.size();
+            }
+
+        }*/
+//        togeBit(BitmapFactory.decodeFile(pic_path), new File(pic_path));
+//        Log.e(TAG, "onPicResult: 拍照结束" + pic_path);
+
+    }
+
+    private void configPic(boolean success,List<LocalMedia> images){
+        dismissDialog();
+        mCameraView.resetState();
+        if(!success) {
+            return;
+        }
         if (nowImgPos == mCusImgvs.size()) {//新增
             LocalMedia localMedia = images.get(0);
             localMedia.setTitle(mtv_check.getText().toString());
@@ -448,9 +489,6 @@ public class PictureCustomCameraActivity extends PictureSelectorCameraEmptyActiv
 
         }
 
-
-//        togeBit(BitmapFactory.decodeFile(pic_path), new File(pic_path));
-//        Log.e(TAG, "onPicResult: 拍照结束" + pic_path);
 
     }
 

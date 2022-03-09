@@ -340,9 +340,9 @@ public class CheckItemActivity extends CarBaseActivity {
                     public void onResult(List<LocalMedia> result) {
                         // 结果回调
                         Log.e(TAG, "onResult: " + result.get(0).getPath());
-                        picLists.add(result.get(0));
-                        mJudgeAdapter.notifyItemChanged(pos);
-                        upLoadImage(0, result.get(0), pos);
+//                        picLists.add(result.get(0));
+//                        mJudgeAdapter.notifyItemChanged(pos);
+                        upLoadImage(0, result.get(0), pos, 0, null);
                     }
 
                     @Override
@@ -354,7 +354,7 @@ public class CheckItemActivity extends CarBaseActivity {
                     @Override
                     public void onCusResult(List<LocalMedia> result, int position, int nowImgpos, OnActiBackListener onActiBackListener) {
                         // 自定义结果回调
-
+                        Log.e(TAG, "onResult: " + result.get(0).getPath());
                     }
                 });
 
@@ -388,7 +388,7 @@ public class CheckItemActivity extends CarBaseActivity {
                     @Override
                     public void onCusResult(List<LocalMedia> images, int pos, int nowImgpos, OnActiBackListener onActiBackListener) {
                         // 自定义结果回调
-                        CheckItemPhotoBean bean = mCheckItemPhotoLists.get(pos);
+              /*          CheckItemPhotoBean bean = mCheckItemPhotoLists.get(pos);
                         if (nowImgpos == mImageBeans.size()) {//新增
                             LocalMedia localMedia = images.get(0);
                             localMedia.setTitle(bean.getCheckItemCode() + ":" + bean.getCheckItemName());
@@ -402,8 +402,8 @@ public class CheckItemActivity extends CarBaseActivity {
                         }
                         bean.setHasTake(true);
                         bean.setImgPos(nowImgpos);
-                        onActiBackListener.onActiBackListener("上传成功：" + images.get(0).getPath());
-                        upLoadImage(1, images.get(0), pos);
+                        onActiBackListener.onActiBackListener("上传成功：" + images.get(0).getPath());*/
+                        upLoadImage(1, images.get(0), pos, nowImgpos, onActiBackListener);
 //                        convertBitmap(BitmapFactory.decodeFile(pic_path), pic_path);
 //                        throwGlideGetBit(BitmapFactory.decodeFile(pic_path),pic_path);
                     }
@@ -411,7 +411,7 @@ public class CheckItemActivity extends CarBaseActivity {
 
     }
 
-    private void upLoadImage(int type, LocalMedia localMedia, int pos) {
+    private void upLoadImage(int type, LocalMedia localMedia, int pos, int nowImgpos, OnActiBackListener onActiBackListener) {
         String path = localMedia.getCompressPath();
         if (TextUtils.isEmpty(path)) {
             path = localMedia.getPath();
@@ -425,10 +425,12 @@ public class CheckItemActivity extends CarBaseActivity {
         } catch (UnsupportedEncodingException e) {
             Log.e("ManOneFragment", "toAddClient: 文件名异常" + names + e.toString());
         }
+//        showLoad();
         CarHttp.getInstance().toGetData(CarHttp.getInstance().getApiService().upLoadFile(body), new HttpBackListener() {
             @Override
             public void onSuccessListener(Object result) {
                 super.onSuccessListener(result);
+//                hideLoad();
                 ImageUpBean bean = new Gson().fromJson(result.toString(), ImageUpBean.class);
                 if (bean.getCode() == 200) {
                     String result_url = bean.getData().getPath();
@@ -437,11 +439,27 @@ public class CheckItemActivity extends CarBaseActivity {
                         String photoPath = itemBean.getPhotoPath();
                         photoPath = TextUtils.isEmpty(photoPath) ? result_url : photoPath + "," + result_url;
                         itemBean.setPhotoPath(photoPath);
+                        mMapList.get(pos).getPicLists().add(localMedia);
+                        mJudgeAdapter.notifyItemChanged(pos);
                     } else {//检测图片的上传
 //                        mImageBeans.get(pos).setImgUrl(result_url);
                         CheckItemPhotoBean bean_photo = mCheckItemPhotoLists.get(pos);
                         bean_photo.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()));
                         bean_photo.setPhotoPath(result_url);
+
+                        if (nowImgpos == mImageBeans.size()) {//新增
+                            localMedia.setTitle(bean_photo.getCheckItemCode() + ":" + bean_photo.getCheckItemName());
+                            localMedia.setCode(bean_photo.getCheckItemCode());
+                            mImageBeans.add(localMedia);
+                            mImagePhotoAdapter.notifyItemInserted(nowImgpos);
+                        } else {//修改
+                            LocalMedia localMedia_ready = mImageBeans.get(nowImgpos);
+                            localMedia_ready.setPath(localMedia.getPath());
+                            mImagePhotoAdapter.notifyItemChanged(nowImgpos);
+                        }
+                        bean_photo.setHasTake(true);
+                        bean_photo.setImgPos(nowImgpos);
+                        onActiBackListener.onActiBackListener(true,"上传成功：" + localMedia.getPath());
 
                     }
 
@@ -451,6 +469,10 @@ public class CheckItemActivity extends CarBaseActivity {
             @Override
             public void onErrorLIstener(String error) {
                 super.onErrorLIstener(error);
+                if (type == 1) {
+                    onActiBackListener.onActiBackListener(false, "上传失败：" + localMedia.getPath());
+                }
+//                hideLoad();
             }
         });
 

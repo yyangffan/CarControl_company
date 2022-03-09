@@ -170,7 +170,7 @@ public class CheckResultActivity extends CarBaseActivity {
             public void onSuccessListener(Object result) {
                 super.onSuccessListener(result);
                 RegistInforBean bean = new Gson().fromJson(result.toString(), RegistInforBean.class);
-                if (bean.getCode() == 200) {
+                if (bean.getCode() == 200&&!isFinishing()) {
                     setItemInfo(bean);
                 } else {
                     ToastShow(bean.getMsg());
