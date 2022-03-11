@@ -147,6 +147,7 @@ public class CancelCheckActivity extends CarBaseActivity {
 
     /*开始查验*/
     private void toComit(String code) {
+        showLoad();
         Map<String, Object> map = new HashMap<>();
         map.put("userName", mUser_name);
         map.put("serialNumber", code);
@@ -156,6 +157,7 @@ public class CancelCheckActivity extends CarBaseActivity {
             @Override
             public void onSuccessListener(Object result) {
                 super.onSuccessListener(result);
+                hideLoad();
                 RegistInforBean bean = new Gson().fromJson(result.toString(), RegistInforBean.class);
                 if (bean.getCode() == 200) {
                     bean.getData().setDrivingLicenseImg("");//Base64图片不能通过Bundle传递太大会报 android.os.TransactionTooLargeException: data parcel size 624508 bytes
@@ -174,12 +176,14 @@ public class CancelCheckActivity extends CarBaseActivity {
             @Override
             public void onErrorLIstener(String error) {
                 super.onErrorLIstener(error);
+                hideLoad();
             }
         });
     }
 
     /*拆解接口*/
     private void getDisassemablVideo(String code) {
+        showLoad();
         Map<String, Object> map = new HashMap<>();
         map.put("deptId", mLoginBean.getData().getDeptId());
         map.put("serialNumber", code);
@@ -189,6 +193,7 @@ public class CancelCheckActivity extends CarBaseActivity {
             @Override
             public void onSuccessListener(Object result) {
                 super.onSuccessListener(result);
+                hideLoad();
                 DisassemablVideo bean = new Gson().fromJson(result.toString(), DisassemablVideo.class);
                 if (bean.getCode() == 200) {
                     Bundle bundle = new Bundle();
@@ -206,6 +211,7 @@ public class CancelCheckActivity extends CarBaseActivity {
             @Override
             public void onErrorLIstener(String error) {
                 super.onErrorLIstener(error);
+                hideLoad();
             }
         });
 

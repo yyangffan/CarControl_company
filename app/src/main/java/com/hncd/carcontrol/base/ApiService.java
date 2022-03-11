@@ -60,6 +60,15 @@ public interface ApiService {
     Observable<JSONObject> getRegInfo(@Body RequestBody body);
 
     /**
+     * 获取登记图片-base64
+     *
+     * @param body
+     * @return
+     */
+    @POST("cancellation/getDrvingLicense")
+    Observable<JSONObject> getDrvingLicense(@Body RequestBody body);
+
+    /**
      * 获取配置项目（查验项目、拍照项目、通道）
      *
      * @param body

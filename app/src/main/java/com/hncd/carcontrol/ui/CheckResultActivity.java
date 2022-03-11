@@ -16,6 +16,7 @@ import com.hncd.carcontrol.adapter.CheckAdapter;
 import com.hncd.carcontrol.base.CarBaseActivity;
 import com.hncd.carcontrol.bean.BaseBean;
 import com.hncd.carcontrol.bean.CheckAllBean;
+import com.hncd.carcontrol.bean.DevlicenBean;
 import com.hncd.carcontrol.bean.EventMessage;
 import com.hncd.carcontrol.bean.RegistInforBean;
 import com.hncd.carcontrol.dig_pop.Digshow;
@@ -158,18 +159,17 @@ public class CheckResultActivity extends CarBaseActivity {
 
     }
 
-    /*开始查验*/
+    /*获取图片*/
     private void getItemInfo() {
         Map<String, Object> map = new HashMap<>();
-        map.put("userName", mUser_name);
         map.put("serialNumber", data_result);
         String result = new Gson().toJson(map);
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=UTF-8"), result);
-        CarHttp.getInstance().toGetData(CarHttp.getInstance().getApiService().getRegInfo(requestBody), new HttpBackListener() {
+        CarHttp.getInstance().toGetData(CarHttp.getInstance().getApiService().getDrvingLicense(requestBody), new HttpBackListener() {
             @Override
             public void onSuccessListener(Object result) {
                 super.onSuccessListener(result);
-                RegistInforBean bean = new Gson().fromJson(result.toString(), RegistInforBean.class);
+                DevlicenBean bean = new Gson().fromJson(result.toString(), DevlicenBean.class);
                 if (bean.getCode() == 200&&!isFinishing()) {
                     setItemInfo(bean);
                 } else {
@@ -185,7 +185,7 @@ public class CheckResultActivity extends CarBaseActivity {
 
     }
 
-    private void setItemInfo(RegistInforBean bean){
+    private void setItemInfo(DevlicenBean bean){
         license_photo = pic_start + bean.getData().getDrivingLicenseImg();
         RequestOptions options = new RequestOptions().placeholder(R.drawable.default_pic).error(R.drawable.default_pic);
         Glide.with(this).load(license_photo).apply(options).into(mImgvResult);
