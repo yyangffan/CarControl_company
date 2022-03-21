@@ -132,8 +132,8 @@ public class CheckItemActivity extends CarBaseActivity {
         String lsh = intent.getStringExtra("lsh");
         mBean = new Gson().fromJson(data, CheckAllBean.class);
         mCheckApprove = mBean.getData().getCheckApprove();
-        mCheckApprove.setCheckDate(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()));
-        mCheckApprove.setCheckStartDate(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()));
+        mCheckApprove.setCheckDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        mCheckApprove.setCheckStartDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         mCheckApprove.setLsh(lsh);
         mCheckApprove.setCheckPeople(mLoginBean.getData().getUserIdX());
         mCheckApprove.setDeptCode(mLoginBean.getData().getDeptId());
