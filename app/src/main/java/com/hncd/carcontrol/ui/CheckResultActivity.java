@@ -106,9 +106,9 @@ public class CheckResultActivity extends CarBaseActivity {
                 }
                 break;
             case R.id.check_result_imgv:
-                if(license_photo.equals(pic_start)||TextUtils.isEmpty(license_photo)){
+                if (license_photo.equals(pic_start) || TextUtils.isEmpty(license_photo)) {
                     ToastShow("图片加载中...");
-                }else {
+                } else {
                     new Digshow(this, license_photo).show();
                 }
                 break;
@@ -145,6 +145,11 @@ public class CheckResultActivity extends CarBaseActivity {
                 mBt_start.setText("审核通过");
                 note = "审核已通过";
                 break;
+            case 5:
+            case 6:
+                mBt_start.setText("拆解完成");
+                note = "拆解已完成";
+                break;
         }
 
         mMapList = new ArrayList<>();
@@ -170,7 +175,7 @@ public class CheckResultActivity extends CarBaseActivity {
             public void onSuccessListener(Object result) {
                 super.onSuccessListener(result);
                 DevlicenBean bean = new Gson().fromJson(result.toString(), DevlicenBean.class);
-                if (bean.getCode() == 200&&!isFinishing()) {
+                if (bean.getCode() == 200 && !isFinishing()) {
                     setItemInfo(bean);
                 } else {
                     ToastShow(bean.getMsg());
@@ -185,7 +190,7 @@ public class CheckResultActivity extends CarBaseActivity {
 
     }
 
-    private void setItemInfo(DevlicenBean bean){
+    private void setItemInfo(DevlicenBean bean) {
         license_photo = pic_start + bean.getData().getDrivingLicenseImg();
         RequestOptions options = new RequestOptions().placeholder(R.drawable.default_pic).error(R.drawable.default_pic);
         Glide.with(this).load(license_photo).apply(options).into(mImgvResult);

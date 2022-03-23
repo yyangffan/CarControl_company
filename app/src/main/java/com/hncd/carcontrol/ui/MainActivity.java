@@ -2,6 +2,7 @@ package com.hncd.carcontrol.ui;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import com.hncd.carcontrol.base.CarBaseActivity;
 import com.hncd.carcontrol.base.Constant;
 import com.hncd.carcontrol.bean.BaseBean;
 import com.hncd.carcontrol.bean.DisassemablVideo;
+import com.hncd.carcontrol.bean.DownLoadBean;
 import com.hncd.carcontrol.bean.EventMessage;
 import com.hncd.carcontrol.bean.MessageNoBean;
 import com.hncd.carcontrol.bean.RegistInforBean;
@@ -60,7 +62,7 @@ public class MainActivity extends CarBaseActivity {
     SmartRefreshLayout mSmart;
     private String[][] mMain_strs = new String[][]{{"注销查验", "0"}, {"车辆拆解", "1"}, {"个人中心", "2"}};
     private MainRecyAdapter mMainRecyAdapter;
-//    private final int REQUEST_CODE_SCAN = 110;
+    //    private final int REQUEST_CODE_SCAN = 110;
     private TextView mTv_red;
 
     @Override
@@ -87,7 +89,7 @@ public class MainActivity extends CarBaseActivity {
         mSmart.setEnableOverScrollDrag(true);//是否启用越界拖动（仿苹果效果）1.0.4
         mSmart.setEnableOverScrollBounce(true);//是否启用越界回弹
         initViews();
-//        getPdaVersion();
+        getPdaVersion();
     }
 
     private void initViews() {
@@ -108,7 +110,7 @@ public class MainActivity extends CarBaseActivity {
     private void whatToGo(String id) {
         switch (id) {
             case "0":
-                CancelCheckActivity.startMe(this,CancelCheckActivity.REQUEST_CODE_SCAN);
+                CancelCheckActivity.startMe(this, CancelCheckActivity.REQUEST_CODE_SCAN);
                 break;
             case "1":
                 statActivity(DissStartActivity.class);
@@ -181,16 +183,30 @@ public class MainActivity extends CarBaseActivity {
     }
 
     private String down_url = "";
+    private String versionCode = "";
+    /*判断是否需要更新*/
     private void getPdaVersion() {
+        try {
+            versionCode = String.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionCode);
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, "checkVersion: " + e.toString());
+            return;
+        }
+        Log.e("Okhttp", "getPdaVersion:当前版本 "+versionCode );
         CarHttp.getInstance().toGetData(CarHttp.getInstance().getApiService().getPdaVersion(), new HttpBackListener() {
             @Override
             public void onSuccessListener(Object result) {
                 super.onSuccessListener(result);
-                BaseBean bean = new Gson().fromJson(result.toString(), BaseBean.class);
+                DownLoadBean bean = new Gson().fromJson(result.toString(), DownLoadBean.class);
                 if (bean.getCode() == 200) {
-                    down_url = "https://cos.pgyer.com/981381188ec5d61ac25244d29a92b723.apk?sign=b3b33e3626dfd9d581e874d0baea4d01&t=1646294502&response-content-disposition=attachment%3Bfilename%3D%E6%9F%A5%E9%AA%8C%E7%9B%91%E7%AE%A1_1.0.apk";
-                    if(!TextUtils.isEmpty(down_url))
-                    showDownDig();
+                    if (bean.getData() != null) {
+                        if (!bean.getData().getCurrentVersion().equals(versionCode)) {
+                            down_url = bean.getData().getDownLoadPath();
+                            if (!TextUtils.isEmpty(down_url))
+                                showDownDig();
+                        }
+                    }
+
                 }
             }
 
