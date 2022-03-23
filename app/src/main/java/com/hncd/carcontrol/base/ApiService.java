@@ -69,6 +69,15 @@ public interface ApiService {
     Observable<JSONObject> getDrvingLicense(@Body RequestBody body);
 
     /**
+     * 开始查验接口
+     *
+     * @param body
+     * @return
+     */
+    @POST("cancellation/startCheck")
+    Observable<JSONObject> startCheck(@Body RequestBody body);
+
+    /**
      * 获取配置项目（查验项目、拍照项目、通道）
      *
      * @param body

@@ -93,11 +93,7 @@ public class CheckResultActivity extends CarBaseActivity {
             case R.id.check_result_start:
                 if (TextUtils.isEmpty(note)) {
                     if (data_ready) {
-                        Intent intent = new Intent(this, CheckItemActivity.class);
-                        intent.putExtra("lsh", data_result);
-                        intent.putExtra("data", check_item);
-                        startActivity(intent);
-                        finish();
+                        startCheck();
                     } else {
                         ToastShow("数据正在准备中,稍后重试");
                     }
@@ -161,6 +157,38 @@ public class CheckResultActivity extends CarBaseActivity {
         mCheckResultRecy.setAdapter(mCheckAdapter);
 
         getItemInfo();
+
+    }
+
+    /*开始查验*/
+    private void startCheck() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("serialNumber", data_result);
+        map.put("userId", mUser_id);
+        String result = new Gson().toJson(map);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=UTF-8"), result);
+        CarHttp.getInstance().toGetData(CarHttp.getInstance().getApiService().startCheck(requestBody), new HttpBackListener() {
+            @Override
+            public void onSuccessListener(Object result) {
+                super.onSuccessListener(result);
+                BaseBean bean = new Gson().fromJson(result.toString(), BaseBean.class);
+                if (bean.getCode() == 200 && !isFinishing()) {
+                    Intent intent = new Intent(CheckResultActivity.this, CheckItemActivity.class);
+                    intent.putExtra("lsh", data_result);
+                    intent.putExtra("data", check_item);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    ToastShow(bean.getMsg());
+                }
+            }
+
+            @Override
+            public void onErrorLIstener(String error) {
+                super.onErrorLIstener(error);
+            }
+        });
+
 
     }
 
