@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
@@ -45,6 +46,7 @@ public class ConfigSetActivity extends CarBaseActivity {
     EditText mConfigSetKou;
     @BindView(R.id.config_set_name)
     EditText mConfigSetName;
+    private boolean can_save = false;
 
     @Override
     public int getContentLayoutId() {
@@ -55,6 +57,12 @@ public class ConfigSetActivity extends CarBaseActivity {
     public void init() {
         ButterKnife.bind(this);
         TitleUtils.setStatusTextColor(false, this);
+        String fwq_ip = (String) CarShareUtil.getInstance().get(CarShareUtil.FWQ_IP, "172.16.98.96");
+        String fwq_dkh = (String) CarShareUtil.getInstance().get(CarShareUtil.FWQ_DKH, "8912");
+        String fwq_inter = (String) CarShareUtil.getInstance().get(CarShareUtil.FWQ_INT, "interface");
+        mConfigSetIp.setText(fwq_ip);
+        mConfigSetKou.setText(fwq_dkh);
+        mConfigSetName.setText(fwq_inter);
     }
 
 
@@ -88,6 +96,7 @@ public class ConfigSetActivity extends CarBaseActivity {
             public void onResponse(Call<JSONObject> call, Response<JSONObject> bean) {
                 //请求成功操作
                 ToastShow("连接成功");
+                can_save = true;
             }
 
             @Override
@@ -99,16 +108,22 @@ public class ConfigSetActivity extends CarBaseActivity {
     }
 
     private void toSetUrl() {
-        toSetBaseUrl();
-        CarShareUtil.getInstance().put(CarShareUtil.APP_BASEURL, Constant.BASE_URL);
-        ToastShow("保存成功");
+        if (can_save) {
+            toSetBaseUrl();
+            CarShareUtil.getInstance().put(CarShareUtil.APP_BASEURL, Constant.BASE_URL);
+            ToastShow("保存成功");
+        } else {
+            Toast.makeText(this, "请先测试连接，通过后才可保存", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /*初始化网络框架*/
     private void toSetBaseUrl() {
         Constant.BASE_URL = getUrl();
         CarApplication.getInstance().initDevring();
-
+        CarShareUtil.getInstance().put(CarShareUtil.FWQ_IP, mConfigSetIp.getText().toString());
+        CarShareUtil.getInstance().put(CarShareUtil.FWQ_DKH, mConfigSetKou.getText().toString());
+        CarShareUtil.getInstance().put(CarShareUtil.FWQ_INT, mConfigSetName.getText().toString());
     }
 
     /*拼接出的服务器地址*/
